@@ -1,0 +1,84 @@
+{% comment %}
+This should be kept in sync with assets/scripts/sections/cart-product.js to keep the non-js and js carts working the same
+{% endcomment %}
+<article class="grid-x cart-product" is="cart-product" :product="{{item | json}}">
+
+  <div class="cell medium-shrink column-image hide-for-small-only">
+    {% if item.image != blank %}
+    <a href="{{ item.url | within: collections.all }}" class="cart-product-image-wrapper" tabindex="-1">
+      <img class="lazyload cart-product-image" data-src="{{item | img_url: '147x220'}}">
+    </a>
+    {% endif %}
+  </div>
+  <div class="cell medium-auto column-details">
+    <div class="label-small mb-5"><span class="show-for-sr">Brand: </span>{{item.vendor}}</div>
+    <div class="cart-line-sku text-small color-text mb-10">SKU: {{item.sku}}</div>
+    <h3 class="cart-line-title">
+      <a href="{{ item.url }}">{{ item.product.title }}</a>
+    </h3>
+
+    <div class="flex-container">
+
+      {% unless item.product.has_only_default_variant  %}
+        <div class="label-small cart-line-variants">
+        {% for property in item.options_with_values %}
+          <span>{{ property.name }} {{ property.value }} / </span>
+        {% endfor %}
+      </div>
+      {% endunless %}
+
+      <div class="label-small">
+        {% if item.original_price != item.final_price %}
+          <span class="show-for-sr">{{ 'cart.label.original_price' | t }}</span>
+          <s class="cart-line-original-price">{{ item.original_price | money }}</s>
+          <span class="show-for-sr">{{ 'cart.label.discounted_price' | t }}</span>
+          <span class="cart-line-price">{{ item.final_price | money }}</span>
+        {% else %}
+          <span class="cart-line-price">{{ item.original_price  | money }}</span>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <div class="discounts" aria-label="{{ 'customer.order.discount' | t }}">
+      {%- for discount in item.discounts -%}
+        <div class="label-small">
+          {{ discount.title }}
+        </div>
+      {%- endfor -%}
+    </div>
+
+		{% comment %}
+    {% for property in item.properties %}
+      {% assign first_char = property.first | truncate: 1, '' %}
+      {% unless property.last == blank or first_char == '_'  %}
+        <div>{{ property.first }}: {{ property.last }}</div>
+      {% endunless %}
+    {% endfor %}
+    {% endcomment %}
+
+    <a class="cart-modal-product-remove" href="/cart/change?line={{ forloop.index }}&amp;quantity=0">
+      <span>{{ 'cart.general.remove' | t }}</span>
+    </a>
+  </div>
+
+  <div class="cell medium-shrink column-quantity 123" data-label="{{ 'cart.label.quantity' | t }}">
+    <label class="show-for-small-only">Quantity:</label>
+    <div class="component-quantity-selector" data-autoload-component="quantity-selector">
+
+      <button type="button" class="js-quantity-remove">-</button>
+      <input data-quantity-selector
+      type="number"
+      id="updates_{{ item.key }}"
+      name="updates[]"
+      value="{{ item.quantity }}"
+      min="0"
+      aria-label="{{ 'cart.general.item_quantity' | t }}">
+      <button type="button" class="js-quantity-add">+</button>
+    </div>
+  </div>
+  <div class="cell medium-shrink column-total" data-label="{{ 'cart.label.total' | t }}">
+    <label class="show-for-small-only">Line total:
+    <output><h4 class="m-0">{{ item.final_line_price | money }}</h4></output>
+  </div>
+</article>

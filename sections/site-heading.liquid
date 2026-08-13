@@ -1,0 +1,25 @@
+<div class="section section-site-heading">
+  <div class="grid-container">
+    <h1 class="h2 text-center">{{ section.settings.site_heading }}</h1>
+  </div>
+</div>
+
+{% schema %}
+{
+    "name": "Site Heading",
+    "settings": [
+        {
+            "type": "text",
+            "id": "site_heading",
+            "label": "Title",
+            "default": "Australia's Leading Trade and Electronics Tools Suppliers Online"
+        }
+    ],
+       "presets": [
+        {
+            "name": "Site Heading",
+            "category": "Sections"
+        }
+    ]
+}
+{% endschema %}

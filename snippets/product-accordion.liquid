@@ -1,0 +1,57 @@
+{% comment %}
+Description will be split on <h2> elements
+{% endcomment %}
+{% assign description_sections = product.description | replace: '<meta charset="utf-8">', '' | strip | split: '<h2>' %}
+{% assign first_section = description_sections | first %}
+<div class="product-information">
+  {% for s in description_sections %}
+    {% if s == blank %}
+      {% continue %}
+    {% endif %}
+    {% if s contains "</h2>" %}
+      {% assign s_title = s | split: '</h2>' | first | strip_html %}
+    {% else %}
+      {% assign s_title = "About" %}
+    {% endif %}
+    <button
+      type="button"
+      aria-controls="{{ s_title | append: '-tabpanel' | handle }}"
+      class="accordion-toggle"
+      {% if forloop.index == 1 or first_section == blank and forloop.index == 2 %}
+        aria-expanded="true"
+      {% else %}
+        aria-expanded="false"
+      {% endif %}
+      data-autoload-component="accordion-item"
+    >
+      <h6 class="accordion-toggle-title">
+        {{ s_title }}
+      </h6>
+      <div class="accordion-toggle-icon"></div>
+    </button>
+    <div
+      id="{{ s_title | append: '-tabpanel' | handle }}"
+      class="accordion accordion-body rte {% unless forloop.index == 1 or first_section == blank and forloop.index == 2 %}closed{% endunless %}"
+    >
+      {{ s | split: "</h2>" | last }}
+    </div>
+  {% endfor %}
+  {% for block in section.blocks %}
+    <button
+      type="button"
+      aria-controls="{{ block.id | append: '-tabpanel' | handle }}"
+      class="accordion-toggle"
+      data-autoload-component="accordion-item"
+      aria-expanded="false"
+    >
+      <h6 class="accordion-toggle-title">{{ block.settings.title }}</h6>
+      <div class="accordion-toggle-icon"></div>
+    </button>
+    <div
+      id="{{ block.id | append: '-tabpanel' | handle }}"
+      class="accordion accordion-body rte closed"
+    >
+      {{ block.settings.content }}
+    </div>
+  {% endfor %}
+</div>

@@ -1,0 +1,52 @@
+<div class="section section-banner-new no-margin">
+
+                <div class=" banner-grid">
+                 
+                    <div class="block-banner">
+                  {% unless section.settings.mobile_image == blank %}
+                  <div class=" mobile_banner">
+                    <a href="{{section.settings.link}}"><img class="lazyload" src="{{ section.settings.mobile_image | img_url: '480x' }}"/></a>
+                  </div>
+                  {% endunless %}
+                  <div class="desktop_banner">
+                    <a href="{{section.settings.link}}">
+                   <img class="lazyload" src="{{ section.settings.image | img_url: ''}}"/>
+                    </a>
+                  </div>
+                  </div>
+               
+                </div>
+
+</div>
+{% schema %}
+{
+               "name": "Static Banner",
+               "settings": [
+              {
+                "type": "image_picker",
+                "id": "image",
+                "label": "Banner Image"
+              },
+              {
+                "type": "image_picker",
+                "id": "mobile_image",
+                "label": "Mobile banner"
+              },
+                        
+              {
+                "type": "url",
+                "id": "link",
+                "label": "Link"
+              }
+              
+            ],
+        
+        "presets": [
+            {
+                "name": "Static banner",
+                "category": "Sections"
+            }
+        ]
+    }
+    
+{% endschema %}

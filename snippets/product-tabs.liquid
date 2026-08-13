@@ -1,0 +1,45 @@
+{% comment %}
+Description will be split on <h2> elements
+{% endcomment %}
+{% assign description_sections = product.description | replace: '<meta charset="utf-8">', '' | strip | split: '<h2>' %}
+{% assign first_section = description_sections | first %}
+<div class="product-tabs" data-autoload-snippet="product-tabs">
+  <div class="tabs" data-autoload-component="tabs">
+
+    <div class="tabs-headings">
+      {% for s in description_sections %}
+        {% if s == blank %}
+          {% continue %}
+        {% endif %}
+        {% if s contains "</h2>" %}
+          {% assign s_title = s | split: '</h2>' | first | strip_html %}
+        {% else %}
+          {% assign s_title = "About" %}
+        {% endif %}
+        <div class="tabs-item label-small">
+          {{ s_title }}
+        </div>
+      {% endfor %}
+
+
+    </div>
+
+    {% for s in description_sections %}
+      {% if s == blank %}
+        {% continue %}
+      {% endif %}
+      {% if s contains "</h2>" %}
+        {% assign s_title = s | split: '</h2>' | first | strip_html %}
+      {% else %}
+        {% assign s_title = "About" %}
+      {% endif %}
+
+      <div
+          class="tabs-content rte"
+      >
+        {{ s | split: "</h2>" | last }}
+      </div>
+    {% endfor %}
+    
+  </div>
+</div>

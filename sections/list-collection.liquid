@@ -1,0 +1,87 @@
+<div class="section section-list-collection theme-light" data-autoload-section="list-collection">
+
+  <div class="mt-40 mb-40">
+    <div class="grid-container text-center">
+      <h1 class="h2 text-uppercase">
+        Wholesale Tools
+      </h1>
+    </div>
+  </div>
+
+  <div class="grid-container">
+    {% paginate collections by section.settings.collections_per_page %}
+    <div class="collection-list"
+         data-load_more_enable="{% if section.settings.plus_load_more_enabled and paginate.pages > 1 %}true{% else %}false{% endif %}">
+
+      {% for collection in collections %}
+        <div class="collection-item">
+          {% render "collection-tile", collection: collection %}
+        </div>
+      {% endfor %}
+    </div>
+
+
+
+      {% if paginate.pages > 1 %}
+        {% comment %} checks if we want to use the load more {% endcomment %}
+        {% if section.settings.plus_load_more_enabled %}
+          {% comment %} checks if there's a next page {% endcomment %}
+          {% if paginate.next.is_link %}
+            <div id="collection-list-load-more-container" class="button-group align-center load-more-group" style="display:none;">
+              <div class="inside">
+                <button id="collection-list-load-more-button"
+                        type="button"
+                        class="button button-primary"
+                        data-num-pages="{{ paginate.pages }}"
+                        data-next-url="{{ paginate.next.url }}"
+                        data-load-more-text="{{ 'collections.load_more' | t }}"
+                        data-loading-text="{{ 'collections.load_more_loading' | t }}">
+                  {{ 'collections.load_more' | t }}
+                </button>
+              </div>
+            </div>
+          {% endif %}
+        {% endif %}
+
+        {% comment %} You'll keep this so that if they don't have JavaScript enabled, it still works. You'll hide with JavaScript {% endcomment %}
+        {% render 'pagination' paginate: paginate %}
+      {% endif %}
+
+    {% endpaginate %}
+  </div>
+
+</div>
+
+
+
+{% schema %}
+{
+  "name": "List Collection",
+  "settings": [
+    {
+      "type": "header",
+      "content": "List Collection pagination"
+    },
+    {
+      "type": "number",
+      "id": "collections_per_page",
+      "label": "Collections per page",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "List Collection infinite scroll"
+    },
+    {
+      "type": "paragraph",
+      "content": "Replace default list collection pagination with a 'lazy load' ajax functionality which loads subsequent collection pages as you scroll down."
+    },
+    {
+      "type": "checkbox",
+      "id": "plus_load_more_enabled",
+      "label": "Enable ajax list collection pagination",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

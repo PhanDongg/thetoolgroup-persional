@@ -1,0 +1,131 @@
+<footer data-autoload-section="footer">
+
+  <div class="grid-container">
+
+
+    <div class="grid-x grid-margin-x grid-margin-y">
+
+      <div class="cell large-4 medium-4 text-center medium-text-left">
+
+        <a href="/">
+          {% if section.settings.logo != blank %}
+            <img src="{{ section.settings.logo | img_url: '400x200' }}" alt="logo"/>
+          {% endif %}
+        </a>
+
+      </div>
+
+      <div class="cell large-8 medium-8">
+
+        {%- assign footer_linklist = section.settings.footer_linklist -%}
+        {% if linklists[footer_linklist].links.size > 0 %}
+          <ul class="menu grid-x grid-margin-x grid-margin-y">
+            {% for link in linklists[footer_linklist].links %}
+              <li class="cell small-12 medium-3">
+                <div
+                    aria-controls="{{ link.title | append: '-tabpanel' | handle }}"
+                    class="accordion-toggle"
+                    data-autoload-component="accordion-item"
+                    aria-expanded="false"
+                >
+                  <a {% if link.url != '#' %}href="{{ link.url }}"{% endif %} class="accordion-toggle-title h4 text-uppercase"> {{ link.title }}</a>
+                  {% if link.links != blank %}
+                  <div class="accordion-toggle-icon hide-for-medium"></div>
+                  {% endif %}
+                </div>
+
+                {% if link.links != blank %}
+                  <ul class="sub-menu color-secondary-text accordion accordion-body rte closed"  id="{{  link.title | append: '-tabpanel' | handle }}">
+                    {% for child_link in link.links %}
+                      <li>
+                        <a href="{{ child_link.url }}"> {{ child_link.title | escape }}</a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+      </div>
+
+    </div>
+
+    <div class="grid-x grid-margin-y align-justify align-middle mt-40">
+      <div class="cell medium-shrink">
+        {% render 'social-icons' %}
+      </div>
+      <div class="cell medium-shrink">
+        {% if section.settings.show_payment_icons %}
+          {% unless shop.enabled_payment_types == empty %}
+          {%- assign payment_icons_available = 'american_express,afterpay,master,visa,paypal,amazon_pay,discover' | split: ',' -%}
+
+            <span class="show-for-sr">{{ 'layout.footer.payment_methods' | t }}</span>
+            <div class="payment-icons">
+              {% for type in shop.enabled_payment_types %}
+                  <div class="icon-coloured">
+                    {{ type | payment_type_svg_tag: class: '' }}
+                  </div>
+              {% endfor %}
+            </div>
+          {% endunless %}
+        {% endif %}
+      </div>
+    </div>
+
+
+    <div class="footer-legals-container grid-x align-justify mt-20">
+
+      <div class="cell">
+        <ul class="footer-legals cell semibold text-small">
+          <li>&copy; {{ 'now' | date: "%Y" }} {{ shop.name | link_to: '/' }}</li>
+          {% for link in linklists[section.settings.footer_legal_linklist].links %}
+            <li><a href="{{link.url}}">{{link.title}}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="cell shrink">
+
+      </div>
+
+    </div>
+
+
+  </div>
+  <script src="{{ 'fgc-banner.js' | asset_url }}"></script>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+  {
+    "type": "link_list",
+    "id": "footer_linklist",
+    "label": "Footer menu",
+    "default": "footer"
+  },
+  {
+    "type": "link_list",
+    "id": "footer_legal_linklist",
+    "label": "Footer Legal menu"
+  },
+  {
+    "type": "checkbox",
+    "id": "show_payment_icons",
+    "label": "Show payment icons",
+    "default": false
+  },
+  {
+    "type": "header",
+    "content": "Logo"
+  },
+  {
+    "type": "image_picker",
+    "id": "logo",
+    "label": "Logo image"
+  }
+  ]
+}
+{% endschema %}

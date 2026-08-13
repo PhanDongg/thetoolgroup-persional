@@ -1,0 +1,117 @@
+{% assign total_inventory = 0 %}
+{% for variant in product.variants %}
+  {% if variant.inventory_quantity > 0 %}
+    {% assign total_inventory = total_inventory | plus: variant.inventory_quantity %}
+  {% endif %}
+{% endfor %}
+{% assign current_variant = product.selected_or_first_available_variant %}
+
+
+<article class="product-tile grid-y {% if product.metafields.my_fields.display_pricing == true %}call-for-pricing{% endif %}" data-handle="{{product.handle}}" data-autoload-snippet="product-tile">
+  <a href="{{product.url | within: collection}}" class="cover-link" tabindex="-1" aria-hidden="true"></a>
+  <div class="cell product-tile__image-container">
+    <img data-src="{{product | img_url: '335x'}}" class="lazyload product-tile-image" alt="{{product.images[0].alt | default: product.title}}">
+  </div>
+  <div class="cell product-tile__body grid-y">
+    <div class="product-tile__info">
+
+      {% if product.metafields.my_fields.display_pricing == true %}
+      <div class="h3 m-0">Call for Pricing</div>
+      {% else %}
+        <div class="product-tile__price-container">
+          {% assign price_split = product.price | money | split: '.' %}
+          <span class="product-tile__price">
+            {%- if product.price_varies -%}
+              <div class="label-small" style="font-size: 12px">From</div>
+            {%- endif -%}
+            <div class="flex-container">
+              <span class="h2 m-0 product-tile__price-main">
+                {% assign is_wholesale = false %}
+                {% assign tax_param = 'INC GST' %}
+                {% if customer %}
+                    {% assign customer_tags = customer.tags | join: ',' | downcase | split: ',' %}
+
+                    {% if customer_tags contains "wholesalegp" %}
+                        {% assign wholesale_price = product.metafields.product.wholesalegp_price %}
+                        {% assign is_wholesale = true %}
+                    {% elsif customer_tags contains "wholesalebl" %}
+                        {% assign wholesale_price = product.metafields.product.wholesalebl_price %}
+                        {% assign is_wholesale = true %}
+                    {% elsif customer_tags contains "wholesalebu" %}
+                        {% assign wholesale_price = product.metafields.product.wholesalebu_price %}
+                        {% assign is_wholesale = true %}
+                    {% elsif customer_tags contains "wholesalett" %}
+                        {% assign wholesale_price = product.metafields.product.wholesalett_price %}
+                        {% assign is_wholesale = true %}
+                    {% elsif customer_tags contains "wholesale" %}
+                        {% assign wholesale_price = product.metafields.product.wholesale_price %}
+                        {% assign is_wholesale = true %}
+                    {% endif %}
+                    {% assign wholesale_price_format = wholesale_price | times:100 %}
+
+                    {% assign discount_price  = current_variant.price | minus: wholesale_price_format  %}
+                    {% assign discount_price  = discount_price | divided_by: 100.00  %}
+
+                    {% if wholesale_price > 0 %}
+                        {% assign wholesale_price_format = wholesale_price | times:100  %}
+                        {% assign discount_price  = current_variant.price | minus: wholesale_price_format  %}
+                        {% assign discount_price  = discount_price | divided_by: 100.00  %}
+                        {% assign discount_percent  = discount_price | divided_by: current_variant.price | times:100 %}
+                        {% assign tax_param = 'EX GST' %}
+                    {% else %}
+                        {% assign wholesale_price_format = current_variant.price | times: 1.1  %}
+                        {% assign discount_price  = 0  %}
+                    {% endif %}
+                    <span class="vendor-money" data-vendor="{{ product.vendor }}" data-price="{{ wholesale_price_format }}">{{ wholesale_price_format | money }}</span>
+                  {% else %}
+                        {% assign including_gst = current_variant.price | times: 1.1 %}
+                        <span class="vendor-money" data-vendor="{{ product.vendor }}" data-price="{{ including_gst }}">{{ including_gst | money }}</span>
+
+                 {%- endif -%}
+              </span>
+              <div class="ml-5 flex-container flex-dir-column">
+                <span class="text-smaller semibold">{{ tax_param }}</span>
+              </div>
+            </div>
+          {%- if product.price < product.compare_at_price and product.price_varies == false -%}
+            <del class="product-tile-compare-price overline-uppercase">Was {{ product.compare_at_price | money }}</del>
+          {%- endif -%}
+          </span>
+          {% if discount_price > 0 %}
+              <div class="label-small">
+                  <del class="product-tile-compare-price overline-uppercas">
+                      {% assign including_gst = current_variant.price | times: 1.1 %}
+                      Was {{ including_gst | money }}
+                  </del>
+              </div>
+          {% endif %}
+
+        </div>
+          
+      {% endif %}
+
+      {% unless product.metafields.my_fields.display_pricing == true %}
+      <div class="product-tile__wishlist color-secondary-text">
+        <!-- Swym Wishlist Plus EPI Button-->
+        <button data-with-epi="true" class="swym-button swym-add-to-wishlist-view-product product_{{product.id}}" data-swaction="addToWishlist" data-product-id="{{product.id | json}}" data-variant-id="{{product.variants[0].id}}" data-product-url="{{ shop.url }}/products/{{ product.handle }}"></button>
+        <!-- Swym Wishlist Plus EPI Button-->
+      </div>
+      {% endunless %}
+
+    </div>
+   <h3 class="label-small">{{ product.vendor }}<br>
+{% assign current_variant = product.selected_or_first_available_variant %}
+SKU: <span class="variant-sku">{{ current_variant.sku }}</span></h3>
+    <h4 class="product-tile__title h4 grid-x align-middle">{{ product.title }}</h4>
+  </div>
+  {% comment %}<div class="cell product-tile__stock">
+    <div class="flex-container align-middle">
+      {% render 'icon-tick' %}<span class="ml-10">{{ total_inventory }} Stock in Sydney</span>
+    </div>
+  </div>{% endcomment %}
+  {% unless product == empty %}
+    <script type="application/json" data-product-json>
+      {{ product | json }}
+    </script>
+  {% endunless %}
+</article>

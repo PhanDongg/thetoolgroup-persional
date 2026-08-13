@@ -1,0 +1,19 @@
+{% assign total_currencies = shop.enabled_currencies | size %}
+{% if total_currencies > 1 %}
+  <div data-autoload-snippet="currency-switcher">
+    {% form "currency" %}
+      <label for="currency" class="show-for-sr">Store Currency</label> 
+      <select id="currency" name="currency" class="currency-switcher">
+      {% for currency in shop.enabled_currencies %}
+        <option value="{{currency.iso_code}}"
+          {% if currency == cart.currency %}
+            selected="selected"
+          {% endif %}
+        >
+          {{currency.symbol}} {{currency.iso_code}}
+        </option>
+        {% endfor %}
+      </select>
+    {% endform %}
+  </div>
+{% endif %}

@@ -1,0 +1,45 @@
+<div class="section section-page-content">
+  <div class="page-content grid-container">
+    <div class="grid-x align-center">
+      <div class="medium-10 large-9">
+
+        <h1 class="mt-10 mb-40">{% include 'page-title' %}</h1>
+        <div class="rte clearfix">
+
+
+          {% if  page.content contains '<h3>' %}
+
+            {% capture description %}{{ page.content | replace: '<h3>', '<!-- split --//><h3>' }}{% endcapture %}
+
+            {% assign accordionItems = description | split: '<!-- split --//>' %}
+
+            {% assign productDescription = accordionItems.first %}
+          {% else %}
+            {% capture productDescription %}{{ page.content }}{% endcapture %}
+          {% endif %}
+
+          {{ productDescription }}
+
+          {% for part in accordionItems %}
+            {% unless forloop.first %}
+            {% assign tabParts = part | split: '</h3>' %}
+            {% assign tabTitle = tabParts.first | replace: '<h3>', '' %}
+            {% assign tabContent = tabParts.last %}
+              <button aria-controls="accordion-item-{{ tabTitle | handleize }}" data-autoload-component="accordion-item" class="accordion-toggle" aria-expanded="false">
+                <h3 class="accordion-toggle-title">{{ tabTitle }}</h3>
+                <div class="accordion-toggle-icon"></div>
+              </button>
+              <div class="grid-x accordion accordion-body" id="accordion-item-{{ tabTitle | handleize }}">
+                <div class="cell">
+                  {{ tabContent }}
+                </div>
+              </div>
+            {% endunless %}
+          {% endfor %}
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

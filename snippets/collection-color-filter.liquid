@@ -1,0 +1,86 @@
+<div class="collection-filter-group">
+  <h3 class="h6 color-secondary-text mb-20">
+    <button class="collection-filter-title" aria-expanded="true" aria-controls="color-filters" id="color-filters-header">
+      Colour
+      {% render 'icon-chevron-down-bold' %}
+    </button>
+  </h3>
+  <ul class="collection-filter-color-list color-swatch-wrapper" role="region" aria-labelledby="color-filters-header" id="color-filters">
+
+    {% if product_colour_map == blank %}
+      {% assign product_colour_map = settings.product_colour_map | remove: '<p>' | strip_newlines  | strip %}
+      {% assign product_colour_map =  product_colour_map | split: '</p>' %}
+
+      {% assign colour_names_array = '' %}
+      {% assign colour_value_array = '' %}
+
+      {% for product_colour in product_colour_map %}
+        {% unless product_colour == blank %}
+        {% assign colour_map = product_colour | split: ':' %}
+          {% if colour_map.size > 1 %}
+
+            {% if colour_names_array.size > 0 %}
+              {% assign colour_names_array = colour_names_array | append: ',' %}
+              {% assign colour_value_array = colour_value_array | append: ',' %}
+            {% endif %}
+            {% assign color_name = colour_map[0] | downcase %}
+            {% assign colour_names_array = colour_names_array | append: color_name %}
+            {% assign colour_value_array = colour_value_array | append: colour_map[1] %}
+          {% endif %}
+        {% endunless %}
+      {% endfor %}
+
+      {% assign colour_names_array = colour_names_array | split: ',' %}
+      {% assign colour_value_array = colour_value_array | split: ',' %}
+
+    {% endif %}
+
+
+
+    {% comment %} Get Active Colour {% endcomment %}
+    {% assign active_colour =  '' %}
+    {% assign filter_prefix =  'colour' | append: '-' %}
+    {% if tags_base contains 'colour-' %}
+      {% assign colour_name_split = tags_base | split: filter_prefix %}
+      {% assign colour_name_part = colour_name_split[1] | split: '+' %}
+      {% assign active_colour =  colour_name_part[0] | prepend: filter_prefix %}
+    {% endif %}
+
+
+    {% for tag in all_tags %}
+      {% assign split = tag | split: ':' %}
+      {% if split[0] == "colour" and split[1] != blank and split[1] != " " %}
+        {% assign qhandle = tag | handle %}
+
+        {% assign color_hex = '' %}
+        {% assign color_name_clean = split[1] | downcase %}
+
+        {% for name in colour_names_array %}
+          {% if color_name_clean == name  %}
+            {% assign color_hex = colour_value_array[forloop.index0] %}
+            {% break %}
+          {% endif %}
+        {% endfor %}
+
+        {% assign tagAppend = qhandle | append: '+' %}
+        {% assign tagPrepend = qhandle | prepend: '+' %}
+
+        {%- capture tagurl -%}
+          {%- if request.path contains qhandle -%}
+            {{request.path | remove: tagAppend | remove: tagPrepend | remove: qhandle}}
+          {%- else -%}
+            {%- if active_colour != blank -%}
+                {{request.path | replace: active_colour, qhandle}}
+            {%- else -%}
+              {{tags_base}}{{qhandle}}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endcapture -%}
+
+        <li>
+          <a href="{{tagurl}}{{ collection_param }}" style="color:{{ color_hex }}" title="{{ split[1] | capitalize }}" class="color-swatch" {% if request.path contains qhandle %}aria-current{% endif %}>{{split[1]}}</a>
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</div>

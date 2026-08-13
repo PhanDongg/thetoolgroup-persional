@@ -1,0 +1,261 @@
+<header data-autoload-section="header" data-section-id="{{ section.id }}" class="site-header" data-section-type="header-section">
+  {% render 'feature-strip' %}
+
+  <div class="header-bottom">
+    <div class="grid-container">
+      <div class="grid-x grid-margin-x header-bottom-wrapper align-middle align-justify">
+        <div class="main-bar-logo cell shrink large-4">
+          <a href="/">
+            {% if section.settings.logo != blank %}
+              <img src="{{ section.settings.logo | img_url: '' }}" alt="{{ section.settings.alt-logo}}"/>
+            {% else %}
+              <span class="main-bar-logo-text">{{ shop.name }}</span>
+            {% endif %}
+          </a>
+        </div>
+        <div class="main-bar-search cell auto medium-auto large-5">
+          <div class="main-bar-search-overlay"></div>
+          <form action="/search" method="get">
+            <input type="search" name="q" id="Search" autocomplete="off" placeholder="Search our products..." aria-label="Press the down arrow to select suggestions">
+            <button
+                    type="submit"
+                    class="main-bar-search-submit toolbar-item-icon"
+                    title="Submit search"
+                    aria-label="Submit search"
+            >
+              {% render "icon-search" %}
+            </button>
+            <button
+                    type="button"
+                    class="main-bar-search-clear underlay toolbar-item-icon"
+                    title="Clear Search"
+                    aria-label="Clear Search"
+            >
+              <svg  xmlns="http://www.w3.org/2000/svg" width="100px" height="100px" viewBox="0 0 100 100" class="icon"><path  d="M61.88,50l35.65-35.65c3.28-3.28,3.28-8.6,0-11.88c-3.28-3.28-8.6-3.28-11.88,0L50,38.12L14.35,2.46 c-3.28-3.28-8.6-3.28-11.88,0c-3.28,3.28-3.28,8.6,0,11.88L38.12,50L2.46,85.65c-3.28,3.28-3.28,8.6,0,11.88 c3.28,3.28,8.6,3.28,11.88,0L50,61.88l35.65,35.65c3.28,3.28,8.6,3.28,11.88,0s3.28-8.6,0-11.88L61.88,50z"/></svg>
+            </button>
+          </form>
+        </div>
+        <ul class="align-right toolbar-items-right toolbar-items cell auto">
+          <li class="toolbar-item toolbar-item-search hide-for-large">
+            <button aria-label="{{ 'general.search.placeholder' | t }}" class="search-focusser toolbar-item-inner">{% render "icon-search" %}</button>
+          </li>
+          {% comment %} <li class="toolbar-item toolbar-item-wishlist show-for-large">
+             <a href="#swym-wishlist" class="swym-wishlist">
+             <button title="Wishlist" class="toolbar-item-inner">{% render "icon-heart" %}</button>
+             </a>
+           </li>
+           {% endcomment %}
+          {% if shop.customer_accounts_enabled %}
+            <li class="toolbar-item show-for-large">
+              <a href="/account" class="toolbar-item-inner" title="Account" aria-label="Account">
+                {% render 'icon-user' %}
+              </a>
+              <div class="toolbar-item__dropdown">
+                {% if customer %}
+                  <div class="button-group stacked">
+                    <a class="button button-primary button-small"
+                       href="/account">{{ 'layout.customer.view_account' | t }}</a>
+                    <a class="button button-primary button-small"
+                       href="/account/logout">{{ 'layout.customer.log_out' | t }}</a>
+                  </div>
+                {% else %}
+                  <div class="button-group stacked">
+                    <a class="button button-primary button-small"
+                       href="/pages/registration-page">{{ 'layout.customer.create_account' | t }}</a>
+                    <a class="button button-primary button-small"
+                       href="/account/login">{{ 'layout.customer.log_in' | t }}</a>
+                  </div>
+                {% endif %}
+              </div>
+            </li>
+          {% endif %}
+
+
+          <li class="toolbar-item toolbar-item-cart">
+            {% render 'cart-modal' %}
+
+            </a>
+          </li>
+
+
+          <li class="toolbar-item hide-for-large">
+            <button class="mobile-menu-toggle js-mobile-nav-toggle" aria-label="Open Mobile Menu" type="button"><span></span></button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="main-bar">
+    <div class="grid-container">
+      <div class="main-bar-bottom">
+        {% render 'navigation-mobile' %}
+        {% render 'navigation', enable_megamenu: section.settings.enable_megamenu%}
+      </div>
+    </div>
+  </div>
+
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "text",
+      "id": "alt-logo",
+      "label": "Alt logo"
+    },
+    {
+      "type": "header",
+      "content": "Menus"
+    },
+    {
+      "type": "link_list",
+      "id": "main_linklist",
+      "label": "Main Menu",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}
+
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "Organization",
+    "name": "{{ shop.name }}",
+  {% if section.settings.logo %}
+    {% assign image_size = section.settings.logo.width | append:'x' %}
+    "logo": "https:{{ section.settings.logo | img_url: image_size }}",
+  {% endif %}
+  "sameAs": [
+    "{{ settings.social_twitter_link }}",
+    "{{ settings.social_facebook_link }}",
+    "{{ settings.social_pinterest_link }}",
+    "{{ settings.social_instagram_link }}",
+    "{{ settings.social_tumblr_link }}",
+    "{{ settings.social_snapchat_link }}",
+    "{{ settings.social_youtube_link }}",
+    "{{ settings.social_vimeo_link }}"
+  ],
+  "url": "{{ shop.url }}{{ page.url }}",
+  "description": "The Tool Group is a new, progressive & customer focused wholesale distributor of quality tools & is a 100% Australian owned company. Contact Us on 1300 700 801",
+  "email": "sales@thetoolgroup.com.au",
+  "telephone": "1300 700 801",
+  "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "7/4 Money Close",
+        "addressLocality": "Rouse Hill",
+        "addressCountry": "AU",
+        "addressRegion": "New South Wales",
+        "postalCode": "2155"
+    }
+}
+</script>
+
+{% if template.name == 'index' %}
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "WebSite",
+      "name": "{{ shop.name }}",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ shop.url }}/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      },
+      "url": "{{ shop.url }}{{ page.url }}"
+    }
+  </script>
+{% endif %}
+
+{%- capture breadcrumb_entity_microdata -%}
+  {% unless template == 'index' or template == 'cart' or template == 'list-collections' %}
+
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+    "@type": "ListItem",
+    "position": 1,
+    "name": "Home",
+    "item": "{{ shop.url }}"
+    }
+
+    {%- if request.page_type == 'product' -%}
+      {%- if collection -%}
+        ,{
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ collection.title | json }},
+        "item": "{{ shop.url }}{{ collection.url }}"
+        }, {
+        "@type": "ListItem",
+        "position": 3,
+        "name": {{ product.title | json }},
+        "item": "{{ shop.url }}{{ product.url }}"
+        }
+      {%- else -%}
+        ,{
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ product.title | json }},
+        "item": "{{ shop.url }}{{ product.url }}"
+        }
+      {%- endif -%}
+    {%- elsif request.page_type == 'collection' -%}
+      ,{
+      "@type": "ListItem",
+      "position": 2,
+      "name": {{ collection.title | json }},
+      "item": "{{ shop.url }}{{ collection.url }}"
+      }
+    {%- elsif request.page_type == 'blog' -%}
+      ,{
+      "@type": "ListItem",
+      "position": 2,
+      "name": {{ blog.title | json }},
+      "item": "{{ shop.url }}{{ blog.url }}"
+      }
+    {%- elsif request.page_type == 'article' -%}
+      ,{
+      "@type": "ListItem",
+      "position": 2,
+      "name": {{ blog.title | json }},
+      "item": "{{ shop.url }}{{ blog.url }}"
+      }, {
+      "@type": "ListItem",
+      "position": 3,
+      "name": {{ blog.title | json }},
+      "item": "{{ shop.url }}{{ article.url }}"
+      }
+    {%- elsif request.page_type == 'page' -%}
+      ,{
+      "@type": "ListItem",
+      "position": 2,
+      "name": {{ page.title | json }},
+      "item": "{{ shop.url }}{{ page.url }}"
+      }
+    {%- endif -%}
+    ]
+  {% endunless %}
+{%- endcapture -%}
+
+{% if breadcrumb_entity_microdata != blank %}
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+    {{ breadcrumb_entity_microdata }}
+    }
+  </script>
+{% endif %}

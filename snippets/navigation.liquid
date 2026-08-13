@@ -1,0 +1,41 @@
+{% comment %}
+Main Navigation
+====================
+Navigation to display on large viewports
+{% endcomment %}
+
+{% assign range_menu = linklists['our-range'] %}
+
+<nav class="main-nav show-for-large" data-autoload-snippet="navigation">
+    <ul class="main-nav-links">
+        {% for link in linklists[section.settings.main_linklist].links %}
+            <li class="{% if link.title == 'Sale' %}sale{% endif %}">
+                <a {% if link.url != '#' and link.url != '#our-range' %}href="{{ link.url }}"{% endif %} class="">
+                  {{ link.title | escape }}
+                  {% if link.links != blank or link.title == 'Products' %}
+                    {% render "icon-chevron-down-bold" %}
+                  {% endif %}
+                </a>
+
+                {% if link.title == 'Products' %}
+                  {% render 'navigation-children', links: range_menu.links %}
+                {% endif %}
+                {% if link.links != blank %}
+                  {% render 'navigation-children', links: link.links %}
+                {% endif %}
+
+            </li>
+        {% endfor %}
+      <li class="main-nav-location">
+        <a id="buy-location" href="/pages/store-locator">WHERE TO BUY</a>
+      </li>
+      <li class="main-nav-cta show-for-large">
+        {% render 'cta-toggle' %}
+      </li>
+    </ul>
+</nav>
+<script>
+  function showLocation() {
+    document.querySelector('.progus-store-locator-widget-handler').click()
+  }
+</script>

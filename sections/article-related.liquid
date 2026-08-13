@@ -1,0 +1,64 @@
+<div class="section section-article-related" data-autoload-section="article-related">
+
+  <div class="grid-container">
+    <div class="grid-x grid-margin-x align-middle mb-30">
+      <div class="cell medium-auto text-center medium-text-left">
+        <div class="overline-uppercase color-secondary mb-10">{{ section.settings.related_articles_subtitle }}</div>
+        <h2>{{ section.settings.related_articles_title }}</h2>
+      </div>
+      <div class="cell medium-shrink text-center">
+        <a href="{{blog.url }}" class="button button-primary">Read More</a>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="grid-container">
+    <div class="slider-wrapper">
+      <div class="glide">
+        <div data-glide-el="track" class="glide__track">
+          <div class="glide__slides grid-x grid-margin-x">
+            {% assign article_listing = 1 %}
+            {% assign current_article_id = article.id %}
+            {% for article in blog.articles limit: 4  %}
+              {% unless current_article_id ==  article.id or article_listing == 4 %}
+                <div class="cell large-4 small-6 align-stretch">
+                  {% render 'article-tile' article: article %}
+                </div>
+              {% assign article_listing = article_listing | plus: 1 %}
+              {% endunless %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+{% schema %}
+
+    {
+        "name": "Related Articles",
+        "settings": [
+            {
+                "type": "header",
+                "content": "Related Posts"
+            },
+            {
+                "type": "text",
+                "id": "related_articles_title",
+                "label": "Related Posts Title",
+                "default": "We think you’ll love these"
+            },
+            {
+                "type": "text",
+                "id": "related_articles_subtitle",
+                "label": "Related Posts Subtitle",
+                "default": "We've selected some similar posts just for you"
+            }
+        ]
+    }
+
+{% endschema %}

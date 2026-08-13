@@ -1,0 +1,65 @@
+<div class="section section-resources no-margin-top theme-light" data-autoload-section="resources"
+     data-datasheet="{{ section.settings.datasheet }}"
+     data-title="{{ section.settings.section_title }}"
+     data-subtitle="{{ section.settings.section_subheading }}"
+  >
+
+  <div class="resource-container">
+
+    <div class="resources-header">
+      <div class="grid-container">
+        <div class="grid-x align-center">
+          <h1>Find your Spec</h1>
+        </div>
+
+      </div>
+    </div>
+
+
+    <div class="resources-results">
+
+      <div class="grid-container">
+
+
+        <div class="grid-x grid-margin-x grid-margin-y align-center">
+
+          <svg class="spinner" viewBox="0 0 50 50">
+            <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+          </svg>
+
+
+        </div>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+
+
+</div>
+
+{% schema %}
+{
+  "name": "Resources",
+  "settings": [
+  {
+    "type": "text",
+    "id": "section_title",
+    "label": "Title"
+  },
+  {
+    "type": "text",
+    "id": "section_subheading",
+    "label": "Subheading"
+  },
+  {
+    "type": "text",
+    "id": "datasheet",
+    "label": "Datasheet"
+  }
+  ]
+}
+{% endschema %}

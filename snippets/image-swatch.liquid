@@ -1,0 +1,32 @@
+<div class="image-swatch">
+
+  {% assign position = option.position | minus: 1 %}
+  {%- assign selector_name = forloop.index0 -%}
+
+  {% for value in option.values %}
+
+    {%- assign input_id = 'variantselector-' | append: selector_name | append: forloop.index0 -%}
+    {% assign color_name_clean = value | downcase %}
+    {% assign colour = value %}
+
+    {% for variant in product.variants %}
+      {% if variant.options[position] == value %}
+        {% assign image = variant.image %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+
+    <input id="{{ label_prefix }}{{ input_id }}"
+           data-single-option-selector
+           data-index="{{ option.position }}"
+           name="variantselector-{{ selector_name }}[]"
+           type="radio" value="{{ value | escape }}" {% if option.selected_value == value %}checked{% endif %}>
+    <label title="{{ value }}"
+           class="{{ option.name | downcase  }}-{{ value | downcase }}" for="{{ label_prefix }}{{ input_id }}">
+
+      <img src="{{ image | img_url: '100x' }}" width="50px"/>
+      <span>{{ value | escape }}</span>
+    </label>
+  {% endfor %}
+
+</div>

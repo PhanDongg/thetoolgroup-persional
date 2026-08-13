@@ -1,0 +1,46 @@
+{% assign technical_datasheet = product.metafields.datasheet.technical_datasheet %}
+{% assign safety_datasheet = product.metafields.datasheet.safety_datasheet %}
+
+{% if technical_datasheet != blank or safety_datasheet != blank %}
+<div class="section section-product-downloads theme-light" data-autoload-section="product-downloads">
+
+  <div class="grid-container">
+
+    <h2>Downloads</h2>
+
+    <div class="grid-x grid-margin-y">
+
+      {% if safety_datasheet != blank %}
+        <div class="cell">
+          <div class="product-download">
+            <div class="grid-x grid-margin-x grid-margin-y align-middle align-justify">
+              <div class="cell medium-shrink">
+                <h3 class="m-0">Safety Datasheet</h3>
+              </div>
+              <div class="cell medium-shrink">
+                <a href="{{ safety_datasheet.value.url }}" target="_blank" class="button button-primary">Download <i class="ml-5">{% render 'icon-arrow-down' %}</i></a>
+              </div>
+            </div>
+          </div>
+       </div>
+      {% endif %}
+      {% if technical_datasheet != blank %}
+        <div class="cell">
+          <div class="product-download">
+            <div class="flex-container align-middle align-justify">
+              <div class="flex-child-shrink">
+                <h3 class="m-0">Technical Datasheet</h3>
+              </div>
+              <div class="flex-child-shrink">
+                <a href="{{ technical_datasheet.value.ur  }}" target="_blank" class="button button-primary">Download <i class="ml-5">{% render 'icon-arrow-down' %}</i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+
+</div>
+{% endif %}

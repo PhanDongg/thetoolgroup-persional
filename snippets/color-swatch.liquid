@@ -1,0 +1,59 @@
+<div class="color-swatch">
+
+  {%- assign selector_name = forloop.index0 -%}
+
+  {% if product_colour_map == blank %}
+    {% assign product_colour_map = settings.product_colour_map | remove: '<p>' | strip_newlines  | strip %}
+    {% assign product_colour_map =  product_colour_map | split: '</p>' %}
+
+    {% assign colour_names_array = '' %}
+    {% assign colour_value_array = '' %}
+
+    {% for product_colour in product_colour_map %}
+
+      {% unless product_colour == blank %}
+      {% assign colour_map = product_colour | split: ':' %}
+        {% if colour_map.size > 1 %}
+
+          {% if colour_names_array.size > 0 %}
+            {% assign colour_names_array = colour_names_array | append: ',' %}
+            {% assign colour_value_array = colour_value_array | append: ',' %}
+          {% endif %}
+          {% assign color_name = colour_map[0] | downcase %}
+          {% assign colour_names_array = colour_names_array | append: color_name %}
+          {% assign colour_value_array = colour_value_array | append: colour_map[1] %}
+        {% endif %}
+      {% endunless %}
+    {% endfor %}
+
+    {% assign colour_names_array = colour_names_array | split: ',' %}
+    {% assign colour_value_array = colour_value_array | split: ',' %}
+
+  {% endif %}
+
+  {% for value in option.values %}
+
+    {%- assign input_id = 'variantselector-' | append: selector_name | append: forloop.index0 -%}
+    {% assign color_hex = '' %}
+    {% assign color_name_clean = value | downcase %}
+
+    {% for name in colour_names_array %}
+      {% if color_name_clean == name  %}
+        {% assign color_hex = colour_value_array[forloop.index0] %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+
+    <input id="{{ label_prefix }}{{ input_id }}"
+           data-single-option-selector
+           data-index="{{ option.position }}"
+           name="variantselector-{{ selector_name }}[]"
+           type="radio" value="{{ value | escape }}" {% if option.selected_value == value %}checked{% endif %}>
+    <label title="{{ value }}"
+           class="{{ option.name | downcase  }}-{{ value | downcase }}" for="{{ label_prefix }}{{ input_id }}"
+           style="color: {{ color_hex }}">
+      <span>{{ value | escape }}</span>
+    </label>
+  {% endfor %}
+
+</div>

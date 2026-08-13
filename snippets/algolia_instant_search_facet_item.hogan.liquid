@@ -1,0 +1,17 @@
+<label class="[[ cssClasses.label ]] [[#helpers.handle ]][[label]][[/helpers.handle ]]">
+  [[# type.disjunctive ]]
+    <input type="checkbox" class="[[ cssClasses.checkbox ]]" [[# isRefined ]]checked[[/ isRefined ]]/>
+  [[/ type.disjunctive]]
+
+  [[& label ]]
+
+  [[# is_tooltip ]]
+  [[# helpers.tooltipImage ]][[& label ]][[/ helpers.tooltipImage ]]
+  [[/ is_tooltip ]]
+
+  <span class="[[ cssClasses.count ]]">
+    [[# helpers.formatNumber ]]
+      [[ count ]]
+    [[/ helpers.formatNumber ]]
+  </span>
+</label>

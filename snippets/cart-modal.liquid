@@ -1,0 +1,14 @@
+<div
+    class="toolbar-item-inner"
+    data-autoload-snippet="cart-modal"
+    data-empty-text="{{ 'cart.general.empty' | t }}"
+    data-free-shipping-display="{{ settings.show_free_shipping_notice }}"
+    data-free-shipping-cost="{{ settings.free_shipping_price | times: 1 }}"
+    data-free-shipping-notice="{{ settings.free_shipping_notice }}"
+>
+  <a class="js-toggle-cart-modal" href="/cart" aria-label="Open Shopping Cart">
+    {% render 'icon-cart' %}
+    <span class="cart-quantity cart-modal-count {% if cart.item_count == 0 %}hide{% endif %}">{{ cart.item_count }}</span>
+  </a>
+  <div class="cart-modal-view"></div>
+</div>

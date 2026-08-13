@@ -1,0 +1,23 @@
+<article class="article-tile cell grid-y" data-autoload-snippet="article-tile">
+
+    <a href="{{ article.url }}" class="cover-link" tabindex="-1" aria-hidden="true"></a>
+
+    <div class="cell article-tile__image-container">
+        <img data-src="{{article | img_url: '450x470', crop: 'center'}}" class="lazyload article-tile__image" alt="{{ article.image.alt }}">
+    </div>
+
+    <div class="cell article-tile__body grid-y">
+        {% capture date %}{{ article.published_at | date: '%d %B %Y' }}{% endcapture %}
+        <span class="article-tile__date label-small color-secondary">{{ date }}</span>
+        <h3 class="article-tile__title text-uppercase grid-x align-middle">{{ article.title }}</h3>
+
+        {% if article.tags.size > 0 %}
+            <div class="article-tile__tags mt-10">
+                {% for tag in article.tags %}
+                    <span class="article-tile__tag">{{ tag }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+</article>

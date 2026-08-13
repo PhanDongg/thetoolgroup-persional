@@ -1,0 +1,49 @@
+<div class="section section-vendor-listing" data-autoload-section="vendor-listing">
+
+    <div class="grid-container">
+
+        <div class="grid-x grid-margin-x grid-margin-y">
+            {% for product_vendor in shop.vendors %}
+                {% if product_vendor == 'Knipex' or product_vendor == 'Mektronics' or product_vendor == 'Elora'  or product_vendor == 'Mektronics Australia'%}
+                    {% continue %}
+                {% endif %}
+
+                {% assign vendor_handle = product_vendor | handle %}
+                {% assign metafields_vendorname = collections[vendor_handle].metafields.custom.vendorname | handle| downcase %}
+                {% assign vendor_handle_downcase = vendor_handle | downcase %}
+
+                {% if product_vendor == 'Super-Lube' %}
+                    {% assign vendor_handle_downcase = 'superlube' %}
+                {% endif %}
+
+                {% if product_vendor == 'B&W' %}
+                    {% assign vendor_handle_downcase = 'b-w-international' %}
+                {% endif %}
+
+                {% assign image_name = 'vendor-' | append: vendor_handle | append: '.jpg' %}
+                <div class="cell small-6 medium-3 large-2">
+                    <div class="vendor-item">
+                        {% if product_vendor == "Yato Tools" %} <span style="display:none">only show brand diff YAto</span>
+                        {% else %}
+                            <div class="vendor-item-image">
+                                {% comment %}{% if collections[vendor_handle].products.size > 0 and metafields_vendorname == vendor_handle_downcase %}{% endcomment %}
+                                    {% comment %}<a href="{{shop.url}}/collections/{{product_vendor | handleize }}"> {{ product_vendor }}</a>{% endcomment %}
+                                {% comment %}{% else %}{% endcomment %}
+                                    {% comment %}{{ product_vendor | link_to_vendor }}{% endcomment %}
+                                {% comment %}{% endif %}{% endcomment %}
+                                <a href="{{shop.url}}/collections/{{vendor_handle_downcase }}"> {{ product_vendor }}</a>
+                                <img class="vendor-image" src="{{ image_name | file_img_url: '' }}" alt="Logo for {{ product_vendor }}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+                                <div class="vendor-image-fallback mt-30 mb-30 text-center" style="display:none">{{product_vendor}}</div>
+
+
+                            </div>
+                            <h2 class="label-small text-uppercase mb-0">{{ product_vendor }}</h2>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</div>

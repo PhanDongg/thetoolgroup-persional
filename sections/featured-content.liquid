@@ -1,0 +1,91 @@
+<div class="section section-featured-content theme-light no-margin" data-autoload-section="featured-content">
+
+  <div class="featured-content-image-container">
+    <img
+        class="featured-content-image lazyload"
+        data-src="{{section.settings.image | img_url: '1260x'}}"
+        sizes="100vw"
+        data-srcset="{{section.settings.image | img_url: '640x'}} 640w,
+       {{section.settings.image | img_url: '1045x'}} 1045w"
+        alt="{{section.settings.image | default: section.settings.title}}"
+    >
+  </div>
+
+
+  <div class="grid-container">
+    <div class="grid-x align-bottom {{ section.settings.content_alignment }} featured-content-grid">
+      <div class="cell medium-6 large-5 featured-content-text-wrapper">
+        <h2 class="mb-10">{{section.settings.title}}</h2>
+        <div class="rte">
+          {{ section.settings.content }}
+        </div>
+        {% unless section.settings.button-link == blank %}
+          <a class="button button-primary mt-20" href="{{section.settings.button-link}}">{{section.settings.button-content}}</a>
+        {% endunless %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+
+{
+  "name": "Featured Content",
+  "settings": [
+  {
+    "type": "header",
+    "content": "Content Alignment"
+  },
+  {
+    "type": "select",
+    "id": "content_alignment",
+    "options": [
+      { "value": "align-left", "label": "Left"},
+      { "value": "align-right", "label": "Right"}
+    ],
+    "label": "Content Alignment"
+  },
+  {
+    "type": "header",
+    "content": "Section Title"
+  },
+  {
+    "type": "text",
+    "id": "title",
+    "label": "Title"
+  },
+  {
+    "type": "header",
+    "content": "Content"
+  },
+  {
+    "type": "richtext",
+    "id": "content",
+    "label": "Text"
+  },
+  {
+    "type": "text",
+    "id": "button-content",
+    "label": "Button Content",
+    "default": "Read More"
+  },
+  {
+    "type": "url",
+    "id": "button-link",
+    "label": "Button Link"
+  },
+  {
+    "type": "image_picker",
+    "id": "image",
+    "label": "Image"
+  }
+  ],
+  "presets": [
+  {
+    "name": "Featured Content",
+    "category": "Sections"
+  }
+  ]
+}
+
+{% endschema %}

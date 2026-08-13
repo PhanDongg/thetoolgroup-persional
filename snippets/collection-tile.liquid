@@ -1,0 +1,22 @@
+{% if image == blank %}
+  {% if collection.image != blank %}
+    {% assign image = collection.image %}
+  {% elsif collection.products.first.image != blank %}
+    {% assign image = collection.products.first.image %}
+  {% endif %}
+{% endif %}
+{% if title == blank and collection.title != blank %}
+  {% assign title = collection.title %}
+{% endif %}
+<article class="collection-tile text-center" data-autoload-snippet="collection-tile">
+  <div class="collection-tile-image-container">
+    {% if image != blank %}
+      <img class="section-list-collection-image lazyload" data-src="{{image | img_url: '450x450', crop: 'center'}}" alt="{{image.alt | default: title}}">
+    {% endif %}
+  </div>
+  <!-- keyboard users move straight to the clearer "view all" anchor -->
+  <a class="cover-link" href="{{collection.url}}" tabindex="-1" aria-hidden="true"></a>
+  {% if title != blank %}
+    <h2 class="h3">{{title}}</h2>
+  {% endif %}
+</article>

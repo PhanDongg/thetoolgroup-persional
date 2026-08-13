@@ -1,0 +1,157 @@
+<div class="section section-customer-login section-customer-form theme-light" data-autoload-section="customer-login">
+    <div class="grid-container">
+        <div class="grid-x grid-margin-x grid-margin-y align-center align-top">
+            <div class="cell medium-8 large-5">
+
+              <div class="tabs" data-autoload-component="tabs">
+
+                <div class="tabs-headings">
+                  <div class="tabs-item{% if template.name == 'login' %} active{% endif %}">Sign In</div>
+                  <div id="custom-sign-up" class="tabs-item{% if template.name == 'register' %} active{% endif %}" onclick="window.location='https://thetoolgroup.com.au/pages/registration-page'" >Sign Up</div>
+                </div>
+
+                <div class="tabs-content{% if template.name == 'login' %} active{% endif %}">
+
+                  <div class="form-box">
+
+                    <div class="form-success mb-30 hide" id="ResetSuccess">
+                      {{ 'customer.recover_password.success' | t }}
+                    </div>
+
+                    <div id="CustomerLoginForm" class="customer-login">
+                      <h2 class="h3 mb-30 text-center">{{ 'customer.login.title' | t }}</h2>
+                      <p class="text-center color-secondary-text">Join thousands of our happy online customers today.</p>
+                      {% form 'customer_login', class: 'form-light' %}
+                        <input type="email"
+                               name="customer[email]"
+                               id="CustomerEmail"
+                               class="mb-20 {% if form.errors contains 'email' %}input-error{% endif %}"
+                               placeholder="{{ 'customer.login.email' | t }}"
+                               spellcheck="false"
+                               autocomplete="off"
+                               autocapitalize="off"
+                               autofocus>
+
+                        {% if form.password_needed %}
+                          <input type="password"
+                                 name="customer[password]"
+                                 id="CustomerPassword"
+                                 class="{% if form.errors contains 'password' %}input-error{% endif %}"
+                                 placeholder="{{ 'customer.login.password' | t }}">
+                        {% endif %}
+
+
+                        {% unless template.name == 'register' %}
+                          {{ form.errors | default_errors }}
+                        {% endunless %}
+
+                        <div class="grid-y grid-margin-y mt-40 align-center align-middle">
+                          <input type="submit" class="button button-secondary button-expanded" value="{{ 'customer.login.sign_in' | t }}">
+
+                          {% if form.password_needed %}
+                            <p class="mt-20"><a href="#recover" class="no-underline" id="RecoverPassword">{{ 'customer.login.forgot_password' | t }}</a></p>
+                          {% endif %}
+                        </div>
+                      {% endform %}
+                    </div>
+
+                    <div id="RecoverPasswordForm" class="hide recover-password">
+                      <h2 class="h3 text-center">{{ 'customer.recover_password.title' | t }}</h2>
+                      <p class="mb-30 text-center color-secondary-text">{{ 'customer.recover_password.subtext' | t }}</p>
+
+                      {% form 'recover_customer_password', class: 'form-light' %}
+
+                        {% if form.posted_successfully? %}
+                          <span class="hide reset-password-success"></span>
+                        {% endif %}
+
+                        <input type="email"
+                               name="email"
+                               id="RecoverEmail"
+                               placeholder="{{ 'customer.recover_password.email' | t }}"
+                               spellcheck="false"
+                               autocomplete="off"
+                               autocapitalize="off">
+
+                        {% unless template.name == 'register' %}
+                          {{ form.errors | default_errors }}
+                        {% endunless %}
+
+                        <div class="grid-y grid-margin-y mt-40 align-center align-middle">
+                          <input type="submit" class="button button-secondary button-expanded" value="{{ 'customer.recover_password.submit' | t }}">
+
+                          <p class="mt-20 mb-20">
+                            <a href="#cancelresetpassword" class="no-underline" id="HideRecoverPasswordLink">
+                              {{ 'customer.recover_password.cancel' | t }}
+                            </a>
+                          </p>
+                        </div>
+                      {% endform %}
+                    </div>
+                  </div>
+              </div>
+
+
+              <div class="tabs-content{% if template.name == 'register' %} active{% endif %}">
+
+                <div class="form-box">
+
+                  <h2 class="h3 mb-30 text-center">{{ 'customer.register.title' | t }}</h2>
+                  <p class="text-center color-secondary-text">Join thousands of our happy online customers today.</p>
+
+                  {% form 'create_customer', class: 'form-light' %}
+
+                    <input type="text"
+                           name="customer[first_name]"
+                           id="FirstName"
+                           placeholder="{{ 'customer.register.first_name' | t }}"
+                           autofocus
+                           required
+                           class="mb-20 {% if form.errors contains 'first_name' %}input-error{% endif %}"
+                           {% if form.first_name %}value="{{ form.first_name }}"{% endif %}>
+
+                    <input type="text"
+                           name="customer[last_name]"
+                           id="LastName"
+                           required
+                           placeholder="{{ 'customer.register.last_name' | t }}"
+                           class="mb-20 {% if form.errors contains 'last_name' %}input-error{% endif %}"
+                           {% if form.last_name %}value="{{ form.last_name }}"{% endif %}>
+
+                    <input type="email"
+                           name="customer[email]"
+                           id="Email"
+                           class="mb-20 {% if form.errors contains 'email' %}input-error{% endif %}"
+                           placeholder="{{ 'customer.register.email' | t }}"
+                           value="{% if form.email %}{{ form.email }}{% endif %}"
+                           required
+                           spellcheck="false"
+                           autocomplete="off"
+                           autocapitalize="off">
+
+                    <input type="password"
+                           name="customer[password]"
+                           id="CreatePassword"
+                           class="{% if form.errors contains 'password' %}input-error{% endif %}"
+                           placeholder="{{ 'customer.register.password' | t }}">
+
+                    {% unless template.name == 'login' %}
+                      {{ form.errors | default_errors }}
+                    {% endunless %}
+
+                    <div class="button-group mt-40 align-right">
+                      <input type="submit" class="button button-secondary button-expanded" value="{{ 'customer.register.submit' | t }}">
+                    </div>
+
+                  {% endform %}
+                </div>
+
+              </div>
+
+              </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>

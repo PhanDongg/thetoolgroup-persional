@@ -1,0 +1,560 @@
+{% if template contains 'product.quickview' %}
+    {%- assign is_quickview = true -%}
+    {%- assign label_prefix = 'quickview-' -%}
+{% endif %}
+
+{% assign current_variant_id = product.selected_or_first_available_variant.id %}
+
+<div data-autoload-section="product">
+
+    <div class="section section-product"
+         {% comment %}itemscope itemtype="http://schema.org/Product"{% endcomment %}
+    >
+
+        {%- assign current_variant = product.selected_or_first_available_variant -%}
+        {%- assign featured_image = current_variant.featured_image | default: product.featured_image -%}
+
+        {% comment %}<meta itemprop="name" content="{{ product.title | escape }}{% unless product.has_only_default_variant %} - {{ current_variant.title | escape }}{% endunless %}">{% endcomment %}
+        {% comment %}<meta itemprop="url" content="{{ shop.url }}{{ current_variant.url }}">{% endcomment %}
+        {% comment %}<meta itemprop="brand" content="{{ product.vendor }}">{% endcomment %}
+        {% comment %}<meta itemprop="image" content="{{ featured_image | img_url: '600x600' }}">{% endcomment %}
+        {% comment %}<meta itemprop="description" content="{{ product.description | strip_html | escape }}">{% endcomment %}
+
+        <div class="grid-container">
+
+            <div class="grid-x grid-margin-x grid-margin-y align-top align-justify">
+
+
+                <div class="product-images cell small-12 medium-6 large-7">
+
+                    <div class="grid-x grid-margin-x grid-margin-y">
+
+                        <div class="cell large-shrink">
+                            <div class="product-features">
+                                {% assign product_tags = product.tags | reverse %}
+                                {% render 'product-features', tags: product_tags %}
+                            </div>
+                        </div>
+                        <div class="cell large-auto">
+                            <div class="grid-y grid-margin-y">
+                                <div class="cell">
+                                    <div class="featured-image-slider-container">
+                                        {% render "product-stickers" product:product %}
+                                        {% if product.images.size > 0 %}
+                                            <div class="featured-image-slider glide">
+                                                <div data-glide-el="track" class="glide__track">
+                                                    <div class="glide__slides">
+                                                        {% for image in product.images %}
+                                                            <div class="glide__slide">
+                                                                <div class="product-item-image-container">
+                                                                    <img data-src="{{image.src | img_url: '700x700'}}" class="lazyload product-item-image db" alt="{{image.alt | default: product.title}}">
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                {% if product.images.size > 1 %}
+                                    <div class="cell">
+                                        <div class="thumbnail-image-slider-container">
+                                            <div class="thumbnail-image-slider">
+                                                <div class="glide__arrows" data-glide-el="controls">
+                                                    <button class="glide__arrow glide__arrow--left" data-glide-dir="<">{% render 'icon-chevron' %}</button>
+                                                    <button class="glide__arrow glide__arrow--right" data-glide-dir=">">{% render 'icon-chevron' %}</button>
+                                                </div>
+                                                <div data-glide-el="track" class="glide__track">
+                                                    <div class="glide__slides">
+                                                        {% for image in product.images %}
+                                                            <div class="glide__slide thumbnail-image-slide">
+                                                                <img data-index="{{ forloop.index0 }}" data-src="{{image.src | img_url: '150x150', crop: 'center'}}" class="lazyload" alt="{{image.alt | default: product.title}}"/>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+
+
+                </div>
+
+                <div class="product-details cell medium-6 large-4 fgc-detials">
+                    {% if product.vendor == "Yato Tools" %} <span style="display:none">only show brand diff YAto</span>
+                    {% else %}
+                        {% assign vendor_file_name = product.vendor | prepend: 'vendor-' | handle | append: '.jpg' %}
+                        {% assign vendor_image =  vendor_file_name | file_img_url %}
+                        <img class="vendor-image" src="{{ vendor_image }}" alt="{{ product.vendor }} Logo" onerror="this.style.display='none';document.querySelector('.product-vendor').style.display='block'"/>
+                    {% endif %}
+
+                    <div class="label-small product-vendor" style="display:none">{{product.vendor}}</div>
+
+                    {% if is_quickview %}
+                        <h3>{{ product.title }}</h3>
+                    {% else %}
+                        {% assign fgc_custom_product_title = product.handle %}
+                        <h1 class="h2 text-uppercase">Wholesale {{ product.title }}</h1>
+                        {% comment %}<h1 class="h2 text-uppercase">Wholesale {{ product.handle }}</h1>{% endcomment %}
+                    {% endif %}
+
+
+                    <h3>SKU: <span data-product-sku class="sku">{{ current_variant.sku }}</span></h3>
+                    {% if product.has_only_default_variant %}
+                        {% if product.metafields.product.supplier_code != blank %}
+                            <div class="part-number mb-20">{{ product.metafields.product.supplier_code }}</div>
+                        {% endif %}
+                    {% else %}
+                        <div class="part-number mb-20">
+                            {% for variant in product.variants %}
+
+                                {% if variant.metafields.magento.short_description != blank %}
+                                    <div class="{% unless current_variant == variant %}hide{% endunless %}" data-sku="{{ variant.sku }}">{{ variant.metafields.magento.short_description }}</div>
+                                {% endif %}
+
+
+                            {% endfor%}
+                        </div>
+                    {% endif %}
+
+                    <div
+                            {% comment %}itemprop="offers" itemscope itemtype="http://schema.org/Offer"{% endcomment %}
+                    >
+
+                        {% comment %}<meta itemprop="priceCurrency" content="{{ shop.currency }}">{% endcomment %}
+                        {% comment %}<meta itemprop="price" content="{{ current_variant.price | divided_by: 100.00 }}">{% endcomment %}
+                        <link itemprop="availability" href="http://schema.org/{% if current_variant.inventory_quantity > 0 %}InStock{% else %}OutOfStock{% endif %}">
+
+                        <form data-product-form action="/cart/add" method="post" enctype="multipart/form-data">
+
+                            <div class="variant-wrapper">
+                                <div class="grid-x grid-margin-x align-bottom">
+                                    <div class="cell">
+                                        {% unless product.has_only_default_variant %}
+
+                                            {% for option in product.options_with_values %}
+                                                <div class="form-row mb-20" {% if option.values.size < 2 %}hidden{% endif %}>
+
+                                                    <label class="option-label" for="SingleOptionSelector-{{ forloop.index0 }}">Select A {{ option.name }}</label>
+
+                                                    {% if option.name == 'Color' or option.name == 'Colour' %}
+
+                                                        {% render 'image-swatch', product: product, forloop: forloop, option: option %}
+
+                                                    {% else %}
+
+                                                        <div class="component-select select-wrap" {% if option.values.size < 2 %}hidden{% endif %}>
+                                                            <select id="SingleOptionSelector-{{ forloop.index0 }}" class=""
+                                                                    data-single-option-selector
+                                                                    data-index="{{ option.position }}"
+                                                                    {% if option.values.size < 2 %}readonly{% endif %}
+                                                            >
+                                                                {% for value in option.values %}
+                                                                    <option value="{{ value | escape }}" {% if option.selected_value == value %}selected="selected"{% endif %}>
+                                                                        {{ value }}
+                                                                    </option>
+                                                                {% endfor %}
+                                                            </select>
+
+                                                        </div>
+
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
+                                        {% endunless %}
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="grid-x grid-margin-x align-middle align-justify mb-20">
+
+                                <div class="cell auto">
+                                    {% if product.metafields.my_fields.display_pricing == true %}
+                                        <div class="h3 m-0">Call for Pricing</div>
+                                    {% else %}
+                                    <div class="price-wrapper" data-price-wrapper>
+
+                                        <div class="grid-x align-middle">
+                                            <div class="cell shrink">
+                                                <h3 class="h1 mb-0 mr-5 price" data-product-price-inc>
+                                                    {% assign is_wholesale = false %}
+                                                    {% assign tax_param = 'INC GST' %}
+                                                    {% assign discount_price  = 0  %}
+                                                    {% assign discount_percent  = 0  %}
+                                                    {% if customer %}
+                                                        {% assign customer_tags = customer.tags | join: ',' | downcase | split: ',' %}
+
+                                                        {% if customer_tags contains "wholesaletk" %}
+                                                            {% assign wholesale_price = product.metafields.product.wholesaletk_price %}
+                                                            {% assign is_wholesale = true %}
+                                                        {% elsif customer_tags contains "wholesaleno" %}
+                                                            {% assign wholesale_price = product.metafields.product.wholesaleno_price %}
+                                                            {% assign is_wholesale = true %}
+                                                        {% elsif customer_tags contains "wholesalepr" %}
+                                                            {% assign wholesale_price = product.metafields.product.wholesalepr_price %}
+                                                            {% assign is_wholesale = true %}
+                                                        {% elsif customer_tags contains "wholesalett" %}
+                                                            {% assign wholesale_price = product.metafields.product.wholesalett_price %}
+                                                            {% assign is_wholesale = true %}
+                                                        {% elsif customer_tags contains "wholesale" %}
+
+                                                            {% assign wholesale_price = product.metafields.product.wholesale_price %}
+                                                            {% assign is_wholesale = true %}
+                                                        {% endif %}
+                                                        {% assign wholesale_price_format = wholesale_price | times:100 %}
+
+                                                        {% assign discount_price  = current_variant.price | minus: wholesale_price_format  %}
+                                                        {% assign discount_price  = discount_price | divided_by: 100.00  %}
+
+                                                        {% if wholesale_price > 0 %}
+                                                            {% assign wholesale_price_format = wholesale_price | times:100  %}
+                                                            {% assign discount_price  = current_variant.price | minus: wholesale_price_format  %}
+                                                            {% assign discount_price  = discount_price | divided_by: 100.00  %}
+                                                            {% assign discount_percent  = discount_price | divided_by: current_variant.price | times:100 | round: 2 %}
+                                                            {% assign tax_param = 'Exc GST' %}
+                                                        {% else %}
+                                                            {% assign wholesale_price_format = current_variant.price | times: 1.1  %}
+                                                            {% assign discount_price  = 0  %}
+                                                        {% endif %}
+                                                        <span data-gst-price>{{ wholesale_price_format | money }}</span>
+
+
+                                                    {% else %}
+
+                                                        {% assign including_gst = current_variant.price | times: 1.1 %}
+
+                                                        <span data-gst-price>{{ including_gst | money }}</span>
+
+                                                    {% endif %}
+                                                </h3>
+                                                <span data-suggested-price class="suggested_retail_price">Suggested Retail Price</span>
+
+                                            </div>
+                                            <div class="cell shrink">
+                                                <div class="label-small">{{ tax_param }}</div>
+                                                <div class="label-small price-compare">
+                                                    {%- if product.compare_at_price_max > product.price -%}
+                                                        <span class="show-for-sr" data-compare-text>{{ 'products.product.regular_price' | t }}</span>
+                                                        <s class="{% if current_variant.compare_at_price <= current_variant.price %} hide{% endif %}" data-compare-price>
+                                                            {% if current_variant.compare_at_price > current_variant.price %}
+                                                                {{ current_variant.compare_at_price | money }}
+                                                            {% endif %}
+                                                        </s>
+                                                    {%- endif -%}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% if discount_price > 0 and false %}
+                                            <div class="label-small">
+                                                <del class="product-tile-compare-price overline-uppercas">
+                                                    {% assign including_gst = current_variant.price | times: 1.1 %}
+                                                    Was {{ including_gst | money }} Inc GST
+                                                </del>
+                                            </div>
+                                        {% endif %}
+                                        <!-- <div class="label-small text-center">
+                                            {% assign including_gst = current_variant.price | times: 1.1 %}
+                                            <span data-gst-price>{{ including_gst | money }}</span> including GST
+                                        </div> -->
+                                    </div>
+                                </div>
+                                {% comment %}
+                                    <div class="cell shrink {% if product.metafields.my_fields.display_pricing == true %}hide{% endif %}">
+                                    <div class="product-details-wishlist-container">
+                                        <div class="swym-wishlist-button-bar"></div>
+                                    </div>
+                                    </div>
+                                {% endcomment %}
+                            </div>
+
+                            {% unless product.metafields.my_fields.display_pricing == true %}
+
+                                <div class="quantity-wrapper {% if is_wholesale == false %}hide{% endif %}">
+                                    <div class="mb-20">
+                                        <div class="quantity-wrapper-container">
+                                            <div class="grid-x grid-margin-x">
+
+                                                {% if section.settings.showquantity %}
+                                                    <div class="cell shrink">
+                                                        <div class="form-row">
+                                                            <label class="option-label show-for-sr" for="{{ label_prefix }}Quantity">
+                                                                {{ 'products.product.quantity' | t }}
+                                                            </label>
+
+                                                            <div class="component-quantity-selector" data-autoload-component="quantity-selector">
+                                                                <button type="button" class="js-quantity-remove" aria-controls="{{ label_prefix }}Quantity">
+                                                                    <span class="show-for-sr">Remove one from quantity</span>
+                                                                    {% render 'icon-minus' %}
+                                                                </button>
+                                                                <input data-quantity-selector
+                                                                       type="number"
+                                                                       id="{{ label_prefix }}Quantity"
+                                                                       name="quantity"
+                                                                       value="1"
+                                                                       min="1">
+                                                                <input data-discount-value type="hidden" name="properties[_discount_value]" value="{{discount_price}}" />
+                                                                <button type="button" class="js-quantity-add" aria-controls="{{ label_prefix }}Quantity">
+                                                                    <span class="show-for-sr">Add one to quantity</span>
+                                                                    {% render 'icon-plus' %}
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+
+                                                <!-- Add to Cart -->
+
+                                                <div class="cell auto">
+
+                                                    <select name="id" class="variant-id" data-product-id>
+                                                        {% for variant in product.variants %}
+                                                            <option {% if variant == current_variant %}selected="selected"{% endif %} value="{{ variant.id }}">
+                                                                {{ variant.title }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+
+
+                                                    <button type="submit"
+                                                            class="add-to-cart button button-primary button-expanded has-icon"
+                                                            name="add"
+                                                            data-add-to-cart
+                                                            {% unless current_variant.available %}disabled="disabled"{% endunless %}>
+                                                        <i data-added-to-cart-icon>
+                                                            {% render 'icon-checkmark' %}
+                                                        </i>
+                                                        <i data-add-to-cart-icon>
+                                                            {% render 'icon-cart' %}
+                                                        </i>
+                                                        <span data-add-to-cart-text>
+                                                            {% if current_variant.available %}
+                                                                {{ 'products.product.add_to_cart' | t }}
+                                                            {% else %}
+                                                                {{ 'products.product.sold_out' | t }}
+                                                            {% endif %}
+                                                        </span>
+                                                    </button>
+                                                    {% if is_quickview %}
+                                                        <a href="{{ product.url }}" class="button button-hollow button-expanded mb-20">{{ 'products.product.quickview_view_full' | t }}</a>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="error-message mb-20" data-add-to-cart-error></span>
+                                </div>
+                            {% endunless %}
+
+                            {% endif %}
+                            {% if customer %}
+                                {% comment %}{% render 'availability-messaging', product: product, settings: section.settings  %}{% endcomment %}
+                                <div class="availability-message-wrapper mt-20">
+
+                                    {% assign product_qty = 0 %}
+                                    {% for variant in product.variants %}
+                                        {% assign product_qty = product_qty | plus:  variant.inventory_quantity %}
+                                    {% endfor %}
+                                    {% if product_qty >0 %}
+                                        <div class="availability-message  availability-message--in-stock iuiuiuiu">
+                                            <div class="availability-message__title">{% render 'icon-tick' %}<span id="stock-count">{{product_qty}}</span> In Stock</div>
+                                        </div>
+                                    {% else %}
+                                        <div class="availability-message">
+                                            <div class="availability-message__title 2">{% render 'icon-truck' %}Out Of Stock</div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+
+                            {% if customer %}
+                                {% comment %} This customer is logged in. {% endcomment %}
+                                <div class="button-group mt-10">
+                                    <div class="inside">
+
+                                        {% comment %}
+                                         <div class="add-to-compare {% if product.metafields.my_fields.display_pricing == true %}hide{% endif %}">
+                                           <span class="SPI_PCA_INIT"> {% render 'icon-add' %}</span>
+
+                                         </div>
+
+
+                                         <a class="button button-hollow button-medium"
+                                           href="#">{% render 'icon-add' %}Add to Compare</a>
+                                         {% endcomment %}
+
+                                        <div class="{% if product.metafields.my_fields.display_pricing == true %}hide{% endif %}">
+                                            <a class="button button-hollow button-medium button-expanded price-match"
+                                               href="#">{% render 'icon-tag' %}Get a Price Match</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            {% else %}
+                                {% comment %}This customer is not logged in. {% endcomment %}
+                            {% endif %}
+
+                            {% comment %}  <div class="zip-pay-info mt-20 mb-20">
+                               <p>
+                                 own it from $10 a week with
+                                 {% render 'icon-zippay' %}
+                               </p>
+                             </div>
+                            {% endcomment %}
+
+                        </form>
+
+                    </div>
+
+
+                    {% unless product == empty %}
+                        <script type="application/json" data-product-json>
+                            {
+                                    "id": {{ product.id }},
+                              "title": {{ product.title | json }},
+                              "handle": {{ product.handle | json }},
+                              "description": {{ product.description | json }},
+                              "vendor": {{ product.vendor | json }},
+                              "type": {{ product.type | json }},
+                              "tags": {{ product.tags | json }},
+                              "price": {{ product.price | json }},
+                              "price_min": {{ product.price_min | json }},
+                              "price_max": {{ product.price_max | json }},
+                              "available": {{ product.available | json }},
+                              "price_varies": {{ product.price_varies | json }},
+                              "variants": [
+                            {%- for variant in product.variants -%}
+                                                  {
+                                                      "id" : {{ variant.id }},
+                                                      "title" : {{ variant.title | json }},
+                                                      "option1" : {{ variant.option1 | json }},
+                                                      "sku" : {{ variant.sku | json }},
+                                                      "requires_shipping" : {{ variant.requires_shipping | json }},
+                                                      "taxable" : {{ variant.taxable | json }},
+                                                      "featured_image" : {{ variant.featured_image | json }},
+                                                      "available" : {{ variant.available | json }},
+                                                      "name" : {{ variant.name | json }},
+                                                      "public_title" : {{ variant.public_title | json }},
+                                                      "options" : {{ variant.options | json }},
+                                                      "price" : {{ variant.price | json }},
+                                                      "weight" : {{ variant.weight | json }},
+                                                      "compare_at_price" : {{ variant.compare_at_price | json }},
+                                                      "inventory_management" : {{ variant.inventory_management | json }},
+                                                      "inventory_quantity" : {{ variant.inventory_quantity }},
+                                                      "barcode" : {{ variant.barcode | json }},
+                                                       {%- if variant.option1 !=  'Default Title'-%}
+                                                      "variant_wholesale_price": {{  variant.metafields.product.wholesale_price  |  times: 100 }},
+                                                      "variant_wholesalett_price": {{ variant.metafields.product.wholesalett_price |  times: 100 }},
+                                                      "variant_wholesaletk_price": {{ variant.metafields.product.wholesaletk_price |  times: 100 }},
+                                                      "variant_wholesaleno_price": {{ variant.metafields.product.wholesaleno_price |  times: 100 }},
+                                                      "variant_wholesalepr_price": {{ variant.metafields.product.wholesalepr_price |  times: 100 }},
+                                                       {%- else -%}
+                                                      "variant_wholesale_price": {{   product.metafields.product.wholesale_price |  times: 100 }},
+                                                      "variant_wholesalett_price": {{ product.metafields.product.wholesalett_price |  times: 100 }},
+                                                      "variant_wholesaletk_price": {{ product.metafields.product.wholesaletk_price |  times: 100 }},
+                                                      "variant_wholesaleno_price": {{ product.metafields.product.wholesaleno_price |  times: 100 }},
+                                                      "variant_wholesalepr_price": {{ product.metafields.product.wholesalepr_price |  times: 100 }},
+                                                        {%- endif -%}
+                                                    "featured_media" : {{ variant.featured_media | json }}
+                                                       }
+                                                      {%- unless forloop.last -%},{%- endunless -%}
+                            {%- endfor -%}
+                            ],
+                  "images": {{ product.images | json }},
+                              "featured_image": {{ product.featured_image | json }},
+                              "options": {{ product.options | json }},
+                              "media": {{ product.media | json }},
+                              "content": {{ product.content | json }}
+                            }
+                        </script>
+                    {% endunless %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="section theme-light">
+        <div class="grid-container">
+
+            <div class="product-information">
+                {% render "product-tabs" %}
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+{% schema %}
+{
+  "name": "Product",
+  "settings": [
+    {
+      "id": "showquantity",
+      "type": "checkbox",
+      "label": "Display quantity selector",
+      "info": "If unchecked, Add To Cart is always 1 item",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Availability Messaging",
+      "info": "[[tagged timeframe]] is used as the placeholder for the timeframe used in product tags"
+    },
+    {
+      "type": "textarea",
+      "id": "message_dangerous_goods",
+      "label": "Dangerous Goods"
+    },
+    {
+      "type": "textarea",
+      "id": "message_in_stock",
+      "label": "In Stock"
+    },
+    {
+      "type": "textarea",
+      "id": "message_stock_arriving_soon",
+      "label": "Stock Arriving Soon"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "accordion",
+      "name": "Accordion",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Common Product Details",
+          "info": "Content in these accordion sections will appear on every product."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,111 @@
+<div class="section section-featured-collections theme-split" data-autoload-section="featured-collections">
+
+    <div class="grid-container">
+      <div class="grid-x grid-margin-x align-middle mb-30">
+        <div class="cell medium-auto text-center medium-text-left">
+          <div class="overline-uppercase color-secondary mb-5">{{ section.settings.section_subheading }}</div>
+          <h2>{{ section.settings.section_title }}</h2>
+        </div>
+        <div class="cell medium-shrink text-center">
+          <a href="{{ section.settings.button_page }}" class="button button-primary">{{ section.settings.button_title }}</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-container">
+      <div class="slider-wrapper">
+        <div class="glide">
+          <div data-glide-el="track" class="glide__track">
+            <div class="glide__slides grid-x grid-margin-x">
+              {% for block in section.blocks %}
+                <div class="cell large-3 small-6 grid-x align-stretch">
+                    {% assign collection = collections[block.settings.collection] %}
+                    {% render 'collection-tile' collection: collection, image: block.settings.image, title: block.settings.title %}
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+{% schema %}
+
+{
+  "name": "Featured Collections",
+  "settings": [
+    {
+        "type": "header",
+        "content": "Section Title"
+    },
+    {
+        "type": "text",
+        "id": "section_title",
+        "label": "Title",
+        "default": "Your Most Loved"
+    },
+    {
+        "type": "text",
+        "id": "section_subheading",
+        "label": "Subheading"
+    },
+    {
+        "type": "header",
+        "content": "Section Button"
+    },
+    {
+        "type": "text",
+        "id": "button_title",
+        "label": "Button title",
+        "default": "See More"
+    },
+    {
+        "type": "url",
+        "id": "button_page",
+        "label": "Link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection_block",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection",
+          "info": "Select collection to display"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Override collection image",
+          "info": "Ideal size: 450x420"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Override collection title"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "category": "Sections",
+      "name": "Featured Collections",
+      "blocks": [
+        {
+          "type": "collection_block",
+          "settings": {
+            "collection": "sale"
+          }
+        }
+      ]
+
+    }
+  ]
+}
+
+{% endschema %}

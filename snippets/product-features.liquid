@@ -1,0 +1,6 @@
+{% for tag in tags %}
+  {% if tag contains 'Feature:' %}
+    {% assign feature = tag | handle | append: '.svg' %}
+    <img src="{{ feature | asset_url }}" class="db" width="65" height="65"/>
+  {% endif %}
+{% endfor %}

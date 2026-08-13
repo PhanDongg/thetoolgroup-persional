@@ -1,0 +1,146 @@
+<aside class="collection-toolbar" data-autoload-snippet="collection-filters" id="collection-filters">
+
+  {% comment %}
+    You can only select one option from each Filter Group
+  {% endcomment %}
+
+
+  {% assign tags_base = request.path | split: 'collections/' %}
+
+
+  {%- capture collection_param -%}
+    {%- if collection.sort_by != blank -%}
+      {{ collection.sort_by | prepend: '?sort_by=' }}
+    {%- endif -%}
+  {%- endcapture -%}
+
+
+  {% assign all_tags = collection.tags | join: ',' | downcase | split: ',' %}
+  {% if tags_base[1] == collection.handle %}
+    {% assign tags_base = request.path | append: '/' %}
+  {% else %}
+    {% assign tags_base = request.path | append: '+' %}
+  {% endif %}
+
+  {% comment %} Categories - List {% endcomment %}
+
+  {% assign categories = '' %}
+  {% for type in collection.all_types %}
+    {% assign query = "product_type:" | append: type | downcase %}
+    {% assign qhandle = query | handle %}
+    {% if all_tags contains query %}
+      {% assign categories = categories | append: qhandle | append: ';;' | append: type | append: ',' %}
+    {% endif %}
+  {% endfor %}
+  {% assign categories = categories | split: ',' %}
+  {% if categories.size > 0 %}
+    <div class="collection-filter-group" aria-label="Product filters">
+      <div class="color-secondary-text">
+        <button class="collection-filter-title" aria-expanded="true" aria-controls="category-filters" id="category-filters-header">
+          Category
+          {% render 'icon-chevron-down-bold' %}
+        </button>
+      </div>
+      <ul class="collection-filter-categories" role="region" aria-labelledby="category-filters-header" id="category-filters">
+
+        {% comment %} Get Active Category {% endcomment %}
+        {% assign active_tag =  '' %}
+        {% assign filter_prefix =  'product_type' | append: '-' %}
+        {% if tags_base contains filter_prefix %}
+          {% assign tag_name_split = tags_base | split: filter_prefix %}
+          {% assign tag_name_part = tag_name_split[1] | split: '+' %}
+          {% assign active_tag =  tag_name_part[0] | prepend: filter_prefix %}
+        {% endif %}
+
+        {% for cat in categories %}
+          {% assign split = cat | split: ';;' %}
+
+          {% assign tagAppend = split[0] | append: '+' %}
+          {% assign tagPrepend = split[0] | prepend: '+' %}
+
+          {%- capture tagurl -%}
+            {%- if request.path contains split[0] -%}
+              {{request.path | remove: tagAppend | remove: tagPrepend | remove: split[0]}}
+            {%- else -%}
+              {%- if active_tag != blank -%}
+                {{request.path | replace: active_tag, split[0]}}
+              {%- else -%}
+                {{tags_base}}{{split[0]}}
+              {%- endif -%}
+            {%- endif -%}
+          {%- endcapture -%}
+
+          <li><a href="{{tagurl}}{{ collection_param }}" {% if request.path contains split[0] %}aria-current{% endif %}>{{split[1]}}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+
+
+  {% comment %} Vendors - Radio {% endcomment %}
+
+  {% assign vendors = "" %}
+  {% for brand in collection.all_vendors %}
+    {% assign query = "brand:" | append: brand | downcase %}
+    {% assign qhandle = query | handle %}
+    {% if all_tags contains query %}
+      {% assign vendors = vendors | append: qhandle | append: ';;' | append: brand | append: ',' %}
+    {% endif %}
+  {% endfor %}
+  {% assign vendors = vendors | split: ',' %}
+  {% if vendors.size > 0 %}
+    <div class="collection-filter-group">
+      <div class="color-secondary-text">
+        <button class="collection-filter-title" aria-expanded="true" aria-controls="brand-filters" id="brand-filters-header">
+          Brand
+          {% render 'icon-chevron-down-bold' %}
+        </button>
+      </div>
+      <ul class="collection-filter-radios" role="region" aria-labelledby="brand-filters-header" id="brand-filters">
+
+        {% comment %} Get Active Tag {% endcomment %}
+        {% assign active_tag =  '' %}
+        {% assign filter_prefix =  'brand' | append: '-' %}
+        {% if tags_base contains filter_prefix %}
+          {% assign tag_name_split = tags_base | split: filter_prefix %}
+          {% assign tag_name_part = tag_name_split[1] | split: '+' %}
+          {% assign active_tag =  tag_name_part[0] | prepend: filter_prefix %}
+        {% endif %}
+
+        {% for vendor in vendors %}
+          {% assign split = vendor | split: ';;' %}
+
+          {% assign tagAppend = split[0] | append: '+' %}
+          {% assign tagPrepend = split[0] | prepend: '+' %}
+
+          {%- capture tagurl -%}
+            {%- if request.path contains split[0] -%}
+              {{request.path | remove: tagAppend | remove: tagPrepend | remove: split[0]}}
+            {%- else -%}
+              {%- if active_tag != blank -%}
+                {{request.path | replace: active_tag, split[0]}}
+              {%- else -%}
+                {{tags_base}}{{split[0]}}
+              {%- endif -%}
+            {%- endif -%}
+          {%- endcapture -%}
+
+          <li><a href="{{tagurl}}{{ collection_param }}" {% if request.path contains split[0] %}aria-current{% endif %}>{{split[1]}}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  {% comment %} filter_class options: collection-filter-radios, collection-filter-list {% endcomment %}
+  {% assign filters = filters | split: ',' %}
+  {% for filter in filters %}
+    {% if filter == 'Color' or filter == "Colour" %}
+      {% render "collection-color-filter",  tags_base: tags_base, all_tags: all_tags, request: request, settings: settings, collection_param: collection_param %}
+    {% else %}
+      {% render "collection-tag-filter", tags_base: tags_base, all_tags: all_tags, request: request, filter_name: filter, filter_class: "", collection_param: collection_param %}
+    {% endif %}
+  {% endfor %}
+
+
+</aside>

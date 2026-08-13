@@ -1,0 +1,109 @@
+<div class="ais-page">
+
+
+  <div class="grid-x grid-margin-x grid-margin-y">
+    <div class="cell large-3">
+      {% if collection != blank %}
+        <h2 class="h2" style="display: none;">{{ collection.title }}</h2>
+      {% else %}
+        <h2 class="h2">Search</h2>
+      {% endif %}
+    </div>
+    <div class="cell medium-8 large-auto">
+      <div class="ais-input">
+        <div class="ais-input--label">
+          [[ translations.search ]]
+        </div>
+        <div class="ais-search-box-container"></div>
+        <div class="ais-input-button">
+          <div class="ais-clear-input-icon"></div>
+          <a title="Search by Algolia - Click to know more" href="https://www.algolia.com/?utm_source=shopify&utm_medium=link&utm_campaign=instantsearch-[[ storeName ]]">
+            <div class="ais-algolia-icon"></div>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="cell medium-4 large-3">
+      <div class="ais-search-header">
+        <div class="ais-stats-container" style="display:none;"></div>
+        <div class="ais-change-display">
+          <span class="ais-change-display-block ais-change-display-selected"><i class="fa fa-th-large"></i></span>
+          <span class="ais-change-display-list"><i class="fa fa-th-list"></i></span>
+        </div>
+        <div class="ais-so          [[# multipleSortOrders ]]
+rt">
+          <span class="ais-sort-orders-container"></span>
+          [[/ multipleSortOrders ]]
+
+          [[^ multipleSortOrders ]]
+          [[ translations.sortBy ]] [[ translations.relevance ]]
+          [[/ multipleSortOrders ]]
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-bottom:30px"></div>
+
+
+
+      <div class="ais-facets-button">
+        Show filters
+      </div>
+
+
+
+      <div class="ais-facets">
+        <div class="ais-clear-refinements-container"></div>
+        <div class="ais-current-refined-values-container"></div>
+
+        <div class="ais-facet-disjunctive ais-facet-inventory">
+          <div class="ais-range-slider--header ais-facet--header ais-header">
+            Inventory
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" class="icon"><path d="M50 59.45l38.89-37.33c.96-.94 2.55-.92 3.53.04l6.83 6.68c.98.96 1 2.52.04 3.46L51.81 77.89c-.49.49-1.16.71-1.81.67-.67.02-1.32-.2-1.81-.67L.71 32.3c-.96-.94-.94-2.5.04-3.46l6.83-6.68c.98-.96 2.57-.98 3.53-.04L50 59.45z"></path></svg>
+          </div>
+          <div class="ais-facet-inventory-container">
+            <div class="ais-Panel">
+              <div class="ais-Panel-body">
+                <div>
+                  <div class="ais-RefinementList ais-facet">
+
+                    <ul class="ais-RefinementList-list">
+                      <li class="ais-RefinementList-item ais-facet--item algolia-in-stock">
+                        <div><label class="ais-refinement-list--label ais-facet--label">In stock only</label></div>
+                      </li>
+                    </ul>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        [[# facets ]]
+        <div class="ais-facet-[[ type ]] ais-facet-[[ escapedName ]]">
+          <div class="ais-range-slider--header ais-facet--header ais-header">
+            [[ title ]]
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" class="icon"><path d="M50 59.45l38.89-37.33c.96-.94 2.55-.92 3.53.04l6.83 6.68c.98.96 1 2.52.04 3.46L51.81 77.89c-.49.49-1.16.71-1.81.67-.67.02-1.32-.2-1.81-.67L.71 32.3c-.96-.94-.94-2.5.04-3.46l6.83-6.68c.98-.96 2.57-.98 3.53-.04L50 59.45z"></path></svg>
+          </div>
+          <div class="ais-facet-[[ escapedName ]]-container"></div>
+        </div>
+        [[/ facets ]]
+      </div>
+
+
+      <div class="ais-block">
+
+        <div class="ais-hits-container ais-results-as-block"></div>
+        <div class="ais-pagination-container"></div>
+      </div>
+
+
+
+      
+
+
+
+
+
+</div>

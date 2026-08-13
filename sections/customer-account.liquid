@@ -1,0 +1,72 @@
+<div class="section section-customer-account theme-light">
+    <div class="grid-container">
+
+
+        <h2 class="text-center mb-40">{{ 'customer.account.title' | t }}</h2>
+
+        <div class="button-group align-center mb-40 hide-for-medium">
+            <a class="button button-secondary" href="/account/logout">{{ 'layout.customer.log_out' | t }}</a>
+        </div>
+
+        <div class="grid-x grid-margin-x grid-margin-y align-justify">
+            <div class="cell large-3">
+
+                <h3 class="has-divider mb-40">{{ 'customer.addresses.title' | t }}</h3>
+
+                {% if customer.default_address != blank  %}
+                    <div class="form-box form-box--border mb-30">
+                        <h4 class="m-0">{{ customer.default_address.name }}</h4>
+                        {{ customer.default_address | format_address }}
+                    </div>
+                {% else %}
+                    <p>You have no addresses yet</p>
+                {% endif %}
+
+                <a href="/account/addresses" class="button button-secondary">{{ 'customer.account.view_addresses' | t }}</a>
+            </div>
+
+            <div class="cell large-8">
+
+                <br class="hide-for-large">
+                <br class="hide-for-large">
+
+                <h3 class="has-divider mb-40">{{ 'customer.orders.title' | t }}</h3>
+
+                {% paginate customer.orders by 20 %}
+                    {% if customer.orders.size != 0 %}
+                        <table class="stack responsive-table">
+                            <thead>
+                            <tr>
+                                <th class="label-small">{{ 'customer.orders.order_number' | t }}</th>
+                                <th class="label-small">{{ 'customer.orders.date' | t }}</th>
+                                <th class="label-small">{{ 'customer.orders.payment_status' | t }}</th>
+                                <th class="label-small">{{ 'customer.orders.fulfillment_status' | t }}</th>
+                                <th class="label-small">{{ 'customer.orders.total' | t }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for order in customer.orders %}
+                                <tr class="responsive-table-row">
+                                    <td data-label="{{ 'customer.orders.order_number' | t }}">{{ order.name | link_to: order.customer_url }}</td>
+                                    <td data-label="{{ 'customer.orders.date' | t }}">{{ order.created_at | date: format: 'month_day_year' }}</td>
+                                    <td data-label="{{ 'customer.orders.payment_status' | t }}">{{ order.financial_status_label }}</td>
+                                    <td data-label="{{ 'customer.orders.fulfillment_status' | t }}">{{ order.fulfillment_status_label }}</td>
+                                    <td data-label="{{ 'customer.orders.total' | t }}">{{ order.total_price | money }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p>{{ 'customer.orders.none' | t }}</p>
+                    {% endif %}
+
+                    {% if paginate.pages > 1 %}
+                        {% render 'pagination' paginate: paginate %}
+                    {% endif %}
+
+                {% endpaginate %}
+
+            </div>
+        </div>
+    </div>
+</div>

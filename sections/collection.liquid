@@ -1,0 +1,105 @@
+{% assign title_header = collection.title %}
+{% if collection.metafields.custom.h1_header != blank %}
+  {% assign title_header = collection.metafields.custom.h1_header %}
+{% endif %}
+
+{% assign collection_image = collection.metafields.collection.image %}
+<div data-autoload-section="collection" class="section section-collection theme-light {% if collection_image != blank %}no-margin-top{% endif %}">
+
+
+  {% if collection_image != blank %}
+  <div class="collection-header {% if collection_image == blank %}no-image{% endif %}" {% if collection_image != blank %} style="background-image: url({{ collection_image }})"{% endif %}>
+    <div class="collection-header-content grid-container">
+      <div class="collection-header-title">
+        <h1 class="h2 m-0">{{title_header}}</h1>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="grid-container">
+    {% if collection.title  =="Wera Tools" %}
+    {% comment %}<h1 class="h2 m-0 wholesale-h1" style="position: absolute;top: 55px;">Wholesale {{collection.title}}</h1>{% endcomment %}
+      <h1 class="h2 m-0 wholesale-h1 fgc-custom-h2" style="position: absolute;top: 55px;">Wholesale {{ collection.handle }}</h1>
+    {% else %}
+    {% comment %}<h1 class="h2 m-0" style="position: absolute;top: 55px;">{{title_header}}</h1>{% endcomment %}
+      <h1 class="h2 m-0 fgc-custom-h2" style="position: absolute;top: 55px;">Wholesale {{ collection.handle }}</h1>
+      {% endif %}
+    <div class="collection-products-algolia"></div>
+    
+  </div>
+
+  {% if collection.description != blank %}
+  <div class="grid-container mt-40">
+    <div class="grid-x grid-margin-x align-right">
+      <div class="cell large-9">
+        <h3 style="display: none;">{{ collection.title }}</h3>
+        {{ collection.description }}
+
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Filter Options"
+    },
+    {
+      "type": "textarea",
+      "id": "filter_tags",
+      "default": "Size,Colour",
+      "label": "Filter Options"
+    },
+    {
+      "type": "header",
+      "content": "Collection infinite scroll"
+    },
+    {
+      "type": "paragraph",
+      "content": "Replace default collection pagination with a 'lazy load' ajax functionality which loads subsequent product pages as you scroll down."
+    },
+    {
+      "type": "checkbox",
+      "id": "plus_load_more_enabled",
+      "label": "Enable ajax collection pagination",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "marketing_block",
+      "name": "Image Block",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "range",
+          "id": "position",
+          "label": "Position",
+          "min": 1,
+          "max": 8,
+          "step": 1,
+          "default": 4
+        },
+        {
+          "type": "text",
+          "id": "scope",
+          "label": "Collections to show on",
+          "default": "all",
+          "info": "Comma separate multiple collection slugs, or use 'all' to show on every collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

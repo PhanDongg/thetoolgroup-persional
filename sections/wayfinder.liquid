@@ -1,0 +1,136 @@
+<div class="section section-wayfinder  {{ section.settings.section_theme }}" data-autoload-section="wayfinder">
+
+  <div class="grid-container">
+    <div class="grid-x grid-margin-x align-middle mb-30">
+      <div class="cell medium-auto text-center {% if section.settings.button_page != blank %}medium-text-left{% endif %}">
+        <div class="overline-uppercase color-secondary mb-5">{{ section.settings.section_subheading }}</div>
+        <h2 class="text-uppercase">{{ section.settings.section_title }}</h2>
+      </div>
+      {% if section.settings.button_page != blank %}
+      <div class="cell medium-shrink text-center">
+        <a href="{{ section.settings.button_page }}" class="button button-primary">{{ section.settings.button_title }}</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="grid-container">
+
+    <div class="slider-wrapper {{ section.settings.borders }}">
+      <div class="glide">
+        <div data-glide-el="track" class="glide__track">
+          <div class="glide__slides wayfinder__container">
+            {% for block in section.blocks %}
+              <div class="wayfinder__item">
+                {% if block.settings.url != blank %}<a href="{{ block.settings.url }}">{% endif %}
+                  <div class="wayfinder__image">
+                    <img class="lazyload" data-src="{{ block.settings.image | img_url: '300x' }}" alt="{{ block.settings.image.alt | escape }}" />
+                  </div>
+                  <h3 class="wayfinder__title text-center text-uppercase mt-15 mb-30">{{ block.settings.title }}</h3>
+                  {% if block.settings.url != blank %}</a>{% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+
+
+{% schema %}
+
+{
+    "name": "Wayfinder",
+    "settings": [
+        {
+          "type": "header",
+          "content": "Section Theme"
+        },
+        {
+          "type": "select",
+          "id": "section_theme",
+          "options": [
+            { "value": "", "label": "White"},
+            { "value": "theme-light", "label": "Light Grey"},
+            { "value": "theme-split", "label": "Split White/Light Grey"},
+            { "value": "theme-split-alt", "label": "Split Light Grey/White"}
+          ],
+          "label": "Section Theme"
+        },
+        {
+          "type": "select",
+          "id": "borders",
+          "options": [
+            { "value": "", "label": "No Borders"},
+            { "value": "has-borders", "label": "Borders"}
+          ],
+          "label": "Borders",
+          "info": "Select whether the wayfinder items should have borders"
+        },
+        {
+            "type": "header",
+            "content": "Section Title"
+        },
+        {
+            "type": "text",
+            "id": "section_title",
+            "label": "Title",
+            "default": "Your Most Loved"
+        },
+        {
+            "type": "text",
+            "id": "section_subheading",
+            "label": "Subheading"
+        },
+        {
+            "type": "header",
+            "content": "Section Button"
+        },
+        {
+            "type": "text",
+            "id": "button_title",
+            "label": "Button title",
+            "default": "See More"
+        },
+        {
+            "type": "url",
+            "id": "button_page",
+            "label": "Link"
+        }
+    ],
+     "blocks": [
+      {
+        "type": "wayfinder_block",
+        "name": "Wayfinder",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title"
+          },
+          {
+            "type": "url",
+            "id": "url",
+            "label": "URL"
+          }
+        ]
+      }
+    ],
+    "presets": [
+        {
+            "name": "Wayfinder",
+            "category": "Sections"
+        }
+    ]
+}
+
+{% endschema %}

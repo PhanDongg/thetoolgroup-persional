@@ -1,0 +1,27 @@
+<div data-autoload-snippet="product-stickers">
+  {% if product.tags contains "Clearance" %}
+  <div class="product-sticker product-sticker-clearance">
+    Clearance
+  </div>
+  {% elsif product.compare_at_price > product.price or product.tags contains "Sale" %}
+  <div class="product-sticker product-sticker-sale">
+    Sale
+  </div>
+  {% elsif product.tags contains "Bonus Offer" %}
+  <div class="product-sticker product-sticker-bonus-offer">
+    Bonus Offer
+  </div>
+  {% elsif product.tags contains "New" %}
+  <div class="product-sticker product-sticker-new">
+    New
+  </div>
+  {% elsif product.tags contains "Top Seller" %}
+  <div class="product-sticker product-sticker-top-seller">
+    Top Seller
+  </div>
+  {% elsif product.tags contains "Stock Arriving Soon:" %}
+  <div class="product-sticker product-sticker-stock-arriving-soon">
+    Stock Arriving Soon
+  </div>
+  {% endif %}
+</div>

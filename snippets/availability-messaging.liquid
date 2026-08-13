@@ -1,0 +1,77 @@
+{% assign stock_arriving_soon = '' %}
+{% assign special_order = '' %}
+{% assign dangerous_goods = false %}
+{% assign product_qty = 0 %}
+{% for tag in product.tags %}
+  {% if tag contains "Dangerous Goods" %}
+    {% assign dangerous_goods = true %}
+  {% endif %}
+{% endfor %}
+
+{% assign message = product.metafields.availability.message %}
+
+{% if message contains "Special Order" %}
+  {% assign is_special_order = true %}
+{% elsif message contains "Stock Arriving Soon"  %}
+  {% assign stock_arriving_soon = message | remove: 'Stock Arriving Soon:' %}
+{% endif %}
+{% assign product_qty = 0 %}
+
+{% for variant in product.variants %}
+  {% assign product_qty = product_qty | plus:  variant.inventory_quantity %}
+{% endfor %}
+
+{% assign total_inventory_text = product_qty %}
+{% if product_qty <= 3 %}
+  {% assign total_inventory_text = 'Only product_qty left in stock' | replace: 'product_qty', product_qty %}
+{% else %}
+  {% assign total_inventory_text = 'In Stock' %}
+
+{% endif %}
+
+
+<div class="availability-message-wrapper mt-20 hhh">
+
+  <script type="application/json" data-stock-json>
+    {
+    {%- for variant in product.variants -%}
+    "{{ variant.id }}": {
+      "inventory_quantity" : {{ variant.inventory_quantity }}
+      }{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+    }
+  </script>
+
+  {%- if product_qty > 0 -%}
+    <div class="availability-message  availability-message--in-stock">
+      <div class="availability-message__title ggggg666">{% render 'icon-tick' %}{{ total_inventory_text }}</div>
+      <div class="availability-message__content"><p class="text-medium">{{ settings.message_in_stock }}</p></div>
+    </div>
+  {%- else -%}
+    {%- if dangerous_goods == true -%}
+      {% comment %}Dangerous Goods{% endcomment %}
+      <div class="availability-message availability-message--dangerous-goods">
+        <div class="availability-message__title">{% render 'icon-warning' %}Dangerous Goods</div>
+        <div class="availability-message__content"><p class="text-medium">{{ settings.message_dangerous_goods }}</p></div>
+      </div>
+    {% elsif is_special_order == true %}
+      <div class="availability-message">
+        <div class="availability-message__title 1">{% render 'icon-edit-alt' %}Special Order</div>
+      </div>
+
+    {%- elsif stock_arriving_soon != '' -%}
+      {% comment %}Stock Arriving Soon{% endcomment %}
+      {%- assign stock_message = settings.message_stock_arriving_soon | replace: '[[tagged timeframe]]', stock_arriving_soon -%}
+      <div class="availability-message">
+        <div class="availability-message__title 2">{% render 'icon-truck' %}{{ message }}</div>
+        <div class="availability-message__content"><p class="text-medium">{{ stock_message }}</p></div>
+      </div>
+    {%- else -%}
+      {% comment %}Lead Time{% endcomment %}
+      <div class="availability-message">
+        <div class="availability-message__title 3">{% render 'icon-truck' %}{{ message }}</div>
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+
+</div>

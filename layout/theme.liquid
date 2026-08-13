@@ -1,0 +1,227 @@
+<!doctype html>
+<!--[if IE 9]> <html class="ie9 no-js supports-no-cookies" lang="{{ shop.locale }}"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js supports-no-cookies" lang="en-AU"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="{{ settings.color_accent }}">
+    <meta name="google-site-verification" content="cUARolYYpUbPQV_q3QGwdHbtinCPb97R4ZVY07ayZs8"/>
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- if settings.favicon != blank -%}
+        <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png">
+    {%- endif -%}
+
+    {%- capture seo_title -%}
+
+        {%- if template contains "collection" -%}
+            {{ collection.title }} products | The Tool Group
+        {%- else -%}
+            {{ page_title }}
+            {%- if current_tags -%}
+                {%- assign meta_tags = current_tags | join: ', ' -%} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags -}}
+            {%- endif -%}
+            {%- if current_page != 1 -%}
+                &ndash; {{ 'general.meta.page' | t: page: current_page }}
+            {%- endif -%}
+            {%- assign escaped_page_title = page_title | escape -%}
+            {%- unless escaped_page_title contains shop.name or escaped_page_title contains "The Tool Group"  -%}
+                &ndash; {{ shop.name }}
+            {%- endunless -%}
+        {%- endif -%}
+    {%- endcapture -%}
+    <title>
+        {%- if template contains "collection" -%}
+            {% if collection.title  =="Wera Tools" %}
+                Wholesale Wera Tools & Products | The Tool Group
+            {% else %}
+                {{ seo_title | strip  | replace: "Mektronics", "The Tool Group" }}
+            {% endif %}
+
+        {%- else -%}
+            {{ seo_title | strip  | replace: "Mektronics", "The Tool Group" }}
+        {%- endif -%}
+    </title>
+
+  {% comment %}}
+  {% assign fgc-custom-collection-title = collection.handle %}
+
+    {%- if template contains "list-collections" -%}
+        <meta name="description" content="The Tool Group is a 100% Australian owned & operated wholesale distributor of quality tools Australia-wide. Check out our range of tools. Contact Us on 1300 700 801">
+    {%- elsif template contains "collection" -%}
+        {%- if page_description -%}
+            {%- assign assign og_description = page_description | default: shop.description | default: shop.name  | replace: "Mektronics", "The Tool Group"  -%}
+            <meta name="description"  content="{{ og_description }}">
+          <meta name="description"  content="{{ "The Tool Group is an Australian owned & operated wholesale distributor of <COLLECTION> Australia-wide. Create an account online or call us on 1300 700 801" | replace: "<COLLECTION>", fgc-custom-collection-title  }}">
+        {%- else -%}
+            <meta name="description" content="{{ collection.title }} products at The Tool Group, Australia’s leading tool wholesaler. Visit our website or call 1300 700 801">
+        {%- endif -%}
+    {%- elsif template contains "product" -%}
+        <meta name="description" content="Shop for {{ product.title | replace: "Mektronics", "The Tool Group" }} online at The Tool Group Australia.">
+    {%- else -%}
+        {%- if page_description -%}
+            <meta name="description" content="{{ page_description | escape | replace: "Mektronics", "The Tool Group" }}">
+        {%- elsif template contains "blog" -%}
+            <meta name="description" content="The Tool Group is a new, progressive & customer focused wholesale distributor of quality tools & is a 100% Australian owned company. Find the latest industry news here">
+        {%- endif -%}
+    {%- endif -%}
+{% endcomment %}
+  
+    {% assign fgc_custom_collection_title = collection.handle %}
+    {% assign fgc_custom_product_title = product.handle %}
+  <meta name="template" content="{{ template }}" >
+    
+    {%- if template contains "list-collections" -%}
+        <meta name="description" content="The Tool Group is a 100% Australian owned & operated wholesale distributor of quality tools Australia-wide. Check out our range of tools. Contact Us on 1300 700 801">
+    {%- elsif template contains "collection" -%}
+        {%- if page_description != blank -%}
+            {%- assign og_description = page_description | default: shop.description | default: shop.name | replace: "Mektronics", "The Tool Group" -%}
+            <meta name="description" content="{{ og_description }}">
+        {%- else -%}
+            <meta name="description" content="The Tool Group is an Australian owned & operated wholesale distributor of {{ fgc_custom_collection_title }} Australia-wide. Create an account online or call us on 1300 700 801">
+        {%- endif -%}
+    {%- elsif template contains "product" -%}
+        {% comment %}}<meta name="description" content="Shop for {{ product.title | replace: 'Mektronics', 'The Tool Group' }} online at The Tool Group Australia.">{% endcomment %}
+      <meta name="description"  content="The Tool Group is an Australian owned & operated wholesale distributor of {{ fgc_custom_product_title }} Australia-wide. Create an account online or call us on 1300 700 801">
+    {%- elsif template contains "blog" -%}
+        <meta name="description" content="The Tool Group is a new, progressive & customer focused wholesale distributor of quality tools & is a 100% Australian owned company. Find the latest industry news here">
+    {%- else -%}
+        {%- if page_description != blank -%}
+            <meta name="description" content="{{ page_description | escape | replace: 'Mektronics', 'The Tool Group' }}">
+        {%- endif -%}
+    {%- endif -%}
+
+  
+
+    {% render 'social-meta-tags' %}
+    {% render 'style-tags' %}
+    <script>
+        document.documentElement.className = document.documentElement.className.replace('no-js', '');
+
+        window.theme = {
+            strings: {
+                addToCart: {{ 'products.product.add_to_cart' | t | json }},
+                soldOut: {{ 'products.product.sold_out' | t | json }},
+                unavailable: {{ 'products.product.unavailable' | t | json }}
+            },
+            moneyFormat: {{ shop.money_format | json }},
+            assetUrl: "{{ 'tooltip-phillips.svg' | asset_url |  split: 'assets/' | first | append: 'assets/' }}"
+        };
+    </script>
+
+
+    {% if customer and customer.tags contains "VIP" %}
+        <script>
+            window.vip = "true";
+            window.pricing = {
+                csv: "{{ settings.vendor_discounts_csv }}"
+            }
+        </script>
+    {% endif %}
+
+
+    {% if customer %}
+        {% assign customer_tags = customer.tags | join: ',' | downcase | split: ',' %}
+        {% if customer_tags contains "wholesaletk" %}
+            <script>
+                window.wholesaletk = "true";
+            </script>
+        {% elsif customer_tags contains "wholesaleno" %}
+            <script>
+                window.wholesaleno = "true";
+            </script>
+        {% elsif customer_tags contains "wholesalepr" %}
+            <script>
+                window.wholesalepr = "true";
+            </script>
+        {% elsif customer_tags contains "wholesalett" %}
+            <script>
+                window.wholesalett = "true";
+            </script>
+        {% elsif customer_tags contains "wholesale" %}
+            <script>
+                window.wholesale = "true";
+            </script>
+        {% endif %}
+    {% endif %}
+
+
+    {% if template.directory == 'customers' %}
+        <!--[if (gt IE 9)|!(IE)]><!-->
+        <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script><!--<![endif]-->
+        <!--[if lte IE 9]>
+    <script src="{{ 'shopify_common.js' | shopify_asset_url }}"></script><![endif]-->
+    {% endif %}
+
+    {{ content_for_header }}
+    {% comment %}
+    {%- render 'bold-pr' -%}
+    {% endcomment %}
+    <!-- Algolia head -->
+    {{ 'algolia_config.js' | asset_url | script_tag }}
+
+
+
+
+
+
+    <script type="text/template" id="template_algolia_money_format">{% include 'algolia_money_format' %}</script>
+    <script type="text/template" id="template_algolia_current_collection_id">{% include 'algolia_current_collection_id' %}</script>
+    <script type="text/template" id="template_algolia_autocomplete">{% include 'algolia_autocomplete.hogan' %}</script>
+    <script type="text/template" id="template_algolia_autocomplete.css">{% include 'algolia_autocomplete.css.hogan' %}</script>
+    <script type="text/template" id="template_algolia_autocomplete_pages_empty">{% include 'algolia_autocomplete_pages_empty.hogan' %}</script>
+    <script type="text/template" id="template_algolia_autocomplete_page">{% include 'algolia_autocomplete_page.hogan' %}</script>
+    <script type="text/template" id="template_algolia_autocomplete_collection">{% include 'algolia_autocomplete_collection.hogan' %}</script>
+    <script type="text/template" id="template_algolia_autocomplete_collections_empty">{% include 'algolia_autocomplete_collections_empty.hogan' %}</script>
+    <script type="text/template" id="template_algolia_autocomplete_article">{% include 'algolia_autocomplete_article.hogan' %}</script>
+    <script type="text/template" id="template_algolia_autocomplete_articles_empty">{% include 'algolia_autocomplete_articles_empty.hogan' %}</script>
+    <script type="text/template" id="template_algolia_autocomplete_product">{% include 'algolia_autocomplete_product.hogan' %}</script>
+    <script type="text/template" id="template_algolia_autocomplete_products_empty">{% include 'algolia_autocomplete_products_empty.hogan' %}</script>
+    <script type="text/template" id="template_algolia_autocomplete_footer">{% include 'algolia_autocomplete_footer.hogan' %}</script>
+    <script type="text/template" id="template_algolia_instant_search">{% include 'algolia_instant_search.hogan' %}</script>
+    <script type="text/template" id="template_algolia_instant_search.css">{% include 'algolia_instant_search.css.hogan' %}</script>
+    <script type="text/template" id="template_algolia_instant_search_stats">{% include 'algolia_instant_search_stats.hogan' %}</script>
+    <script type="text/template" id="template_algolia_instant_search_facet_show_more">{% include 'algolia_instant_search_facet_show_more.hogan' %}</script>
+    <script type="text/template" id="template_algolia_instant_search_facet_item">{% include 'algolia_instant_search_facet_item.hogan' %}</script>
+    <script type="text/template" id="template_algolia_instant_search_current_refined_values_item">{% include 'algolia_instant_search_current_refined_values_item.hogan' %}</script>
+    <script type="text/template" id="template_algolia_instant_search_product">{% include 'algolia_instant_search_product.hogan' %}</script>
+    <script type="text/template" id="template_algolia_instant_search_no_result">{% include 'algolia_instant_search_no_result.hogan' %}</script>
+    {{ 'algolia_dependency_font-awesome-4-4-0.min.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'algolia_externals.js' | asset_url }}" defer></script>
+    {{ 'algolia_init.js' | asset_url | script_tag }}
+    <script src="{{ 'algolia_analytics.js' | asset_url }}" defer></script>
+    <script src="{{ 'algolia_translations.js' | asset_url }}" defer></script>
+    <script src="{{ 'algolia_helpers.js' | asset_url }}" defer></script>
+    <script src="{{ 'algolia_autocomplete.js' | asset_url }}" defer></script>
+    <script src="{{ 'algolia_facets.js' | asset_url }}" defer></script>
+    <script src="{{ 'algolia_sort_orders.js' | asset_url }}" defer></script>
+    <script src="{{ 'algolia_instant_search.js' | asset_url }}" defer></script>
+    <!-- /Algolia head -->
+
+    <script type="text/javascript" src="https://www.bugherd.com/sidebarv2.js?apikey=6jqflfor0jeaqmxxb4x4ca" async="true"></script>
+</head>
+
+<body id="{{ page_title | handle }}" class="template-{{ template.name | handle }} grid-y{% unless settings.show_feature_strip == false %} has-feature-strip{% endunless %}">
+
+<a class="in-page-link show-on-focus skip-link" href="#main">{{ 'general.accessibility.skip_to_content' | t }}</a>
+{% section 'header' %}
+
+<main role="main" class="cell grow" id="main">
+    {{ content_for_layout }}
+</main>
+
+{% section 'form-subscribe' %}
+{% section 'footer' %}
+
+{% render 'script-tags' %}
+{% render 'ext-fonts' %}
+
+{% include 'swymSnippet' %}
+{% include 'swym-custom' %}
+
+
+
+{% render 'wholesale-now', customer: customer, template: template, product: product, cart: cart %}
+</body>
+</html>

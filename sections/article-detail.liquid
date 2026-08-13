@@ -1,0 +1,152 @@
+{% comment %}
+When a comment is submitted, the browser is redirected to a page that includes
+the new comment id in its URL.
+#comments is a required ID and is used as an anchor link by Shopify.
+{% endcomment %}
+
+{%- assign number_of_comments = article.comments_count -%}
+
+{% comment %}
+If a comment was just submitted but requires moderation, we have an extra comment to count.
+{% endcomment %}
+{% if comment and comment.status != 'published' %}
+    {% assign number_of_comments = article.comments_count | plus: 1 %}
+{% endif %}
+
+
+{% assign current_article_id = article.id %}
+
+<div class="section section-article-detail" data-autoload-section="article-detail">
+
+    <article class="grid-container" role="article">
+
+        <div class="article__header">
+
+            <div class="grid-x grid-margin-x grid-margin-y align-center">
+
+                <div class="cell medium-4 large-3">
+
+                    <img
+                        class="article__image lazyload"
+                        data-src="{{article.image | img_url: '400x400', crop: 'center'}}"
+                        alt="{{article.image | default: article.title}}"
+                    >
+
+                </div>
+                <div class="cell medium-8 large-7">
+
+                    <div class="article__details">
+
+                        <div class="overline-uppercase color-secondary mb-10">Blog</div>
+                        <h1 class="display article__title">{{ article.title }}</h1>
+
+                        <div class="label-small color-secondary">{{ article.published_at | date: '%d %B %Y' }}</div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="grid-x grid-margin-x align-center">
+
+            <div class="cell medium-4 large-3 small-order-2 medium-order-1">
+                <div class="article__meta text-center">
+                    <h3 class="article__meta-label text-uppercase">Categories</h3>
+                    <div class="article__tags">
+                        {% for tag in article.tags %}
+                            <a class="article__tag" href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="article__share text-center">
+                    <h3 class="article__share-label text-uppercase">Share</h3>
+                    {% if settings.social_sharing_blog %}
+                        {% render 'social-sharing', share_title: article.title, share_permalink: article.url, share_image: article.image %}
+                    {% endif %}
+                </div>
+                {% comment %}Related Products{% endcomment %}
+                {% assign related_products = article.metafields.products %}
+                {% if related_products != blank %}
+                    <div class="article__featured-products">
+                        <h3 class="article__featured-products-label text-center">Featured Products</h3>
+
+                        <div class="featured-products-list grid-x grid-margin-y grid-margin-x">
+                            {% for p in related_products %}
+                                {% assign related_product = all_products[p.last] %}
+                                {% unless related_product == blank %}
+                                    <div class="featured-product-container cell medium-12 small-6">
+                                        {% include 'product-tile' with product: related_product %}
+                                    </div>
+                                {% endunless %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+
+            <div class="cell medium-8 large-7 small-order-1 medium-order-2">
+
+                {% assign articleContent = article.content |  replace_first: '<p>', '<p class="lead">' %}
+
+                <div class="rte clearfix" itemprop="articleBody">
+                    {{ articleContent }}
+                </div>
+
+            </div>
+
+
+    </article>
+
+    <script type="application/ld+json">
+        {
+          "@context": "http://schema.org",
+          "@type": "Article",
+          "articleBody": "{{ article.content | strip_html }}",
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "{{ shop.url }}{{ page.url }}"
+          },
+          "headline": "{{ article.title }}",
+          {% if article.excerpt != blank %}
+            "description": "{{ article.excerpt | strip_html }}",
+          {% endif %}
+          {% if article.image %}
+                    {% assign image_size = article.image.width | append: 'x' %}
+            "image": [
+              "https:{{ article | img_url: image_size }}"
+            ],
+          {% endif %}
+          "datePublished": "{{ article.published_at | date: '%Y-%m-%dT%H:%M:%SZ' }}",
+          "dateCreated": "{{ article.created_at | date: '%Y-%m-%dT%H:%M:%SZ' }}",
+          "author": {
+            "@type": "Person",
+            "name": "{{ article.author }}"
+          },
+          "publisher": {
+            "@type": "Organization",
+            {% if settings.share_image %}
+                    {% assign image_size = settings.share_image.width | append: 'x' %}
+              "logo": {
+                "@type": "ImageObject",
+                "height": "{{ settings.share_image.height }}",
+                "url": "https:{{ settings.share_image | img_url: image_size }}",
+                "width": "{{ settings.share_image.width }}"
+              },
+            {% elsif article.image %}
+                    {% assign image_size = article.image.width | append: 'x' %}
+              "logo": {
+                "@type": "ImageObject",
+                "height": "{{ article.image.height }}",
+                "url": "https:{{ article.image | img_url: image_size }}",
+                "width": "{{ article.image.width }}"
+              },
+            {% endif %}
+            "name": "{{ shop.name }}"
+          }
+        }
+    </script>
+</div>

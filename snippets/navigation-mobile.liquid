@@ -1,0 +1,91 @@
+{% comment %}
+Mobile Navigation
+====================
+Navigation to display on small and medium viewports
+{% endcomment %}
+
+{% assign range_menu = linklists['our-range'] %}
+
+<nav role="navigation" class="mobile-nav hide-for-large" data-autoload-snippet="navigation-mobile">
+    <ul class="mobile-nav-links">
+        {% for link in linklists[section.settings.main_linklist].links %}
+            <li>
+                <a {% if link.links != blank or link.title == 'Products' %}class="toggle has-children"{% endif %}
+                    {% if link.url != '#' and link.url != '#our-range' %}href="{{ link.url }}"{% endif %} >
+                  {{ link.title | escape }}
+                  {% if link.links != blank or link.title == 'Products' %}
+                   {% render 'icon-chevron' %}
+                  {% endif %}
+                </a>
+                {% if link.title == 'Products' %}
+                  {% render 'navigation-mobile-children', title: link.title, links: range_menu.links %}
+                {% endif %}
+                {% if link.links != blank %}
+                  {% render 'navigation-mobile-children', title: link.title, links: link.links %}
+                {% endif %}
+            </li>
+        {% endfor %}
+        <li class="main-nav-location">
+          <a id="buy-location" href="/pages/store-locator">WHERE TO BUY</a>
+        </li>
+        {% if shop.customer_accounts_enabled %}
+            <li class="border-top">
+                <a class="toggle">{{ 'layout.customer.account' | t }}
+                 {% render 'icon-chevron' %}
+                </a>
+              <div class="mobile-nav-sub-links-container">
+                <div>
+                <ul class="mobile-nav-sub-links">
+
+                  <div class="mobile-nav-sub-links-title label-small back-toggle">
+                    {% render 'icon-chevron' %}
+                    {{ 'layout.customer.account' | t }}
+                  </div>
+
+                    {% if customer %}
+                        <li>
+                            <a href="/account">{{ 'layout.customer.view_account' | t }}</a>
+                        </li>
+                        <li>
+                            <a href="/account/logout">{{ 'layout.customer.log_out' | t }}</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="/account/register">{{ 'layout.customer.create_account' | t }}</a>
+                        </li>
+                        <li>
+                            <a href="/account/login">{{ 'layout.customer.log_in' | t }}</a>
+                        </li>
+                    {% endif %}
+                </ul>
+                </div>
+              </div>
+            </li>
+        {% endif %}
+ {% comment %} 
+      <li>
+        <a href="#swym-wishlist">Wishlist</a>
+      </li>
+ {% endcomment %} 
+        {% if shop.enabled_currencies.size > 1 %}
+          <li class="grid-x align-middle">
+            <div class="cell shrink h6 m-0 label-small">Currency:</div>
+            <div class="cell auto">
+              {% render "currency-switcher" %}
+            </div>
+          </li>
+      {% endif %}
+    </ul>
+
+    <div class="mobile-nav-buttons">
+      <div class="grid-x grid-margin-x">
+        <div class="cell auto">
+          <a href="tel:1300 700 801" class="button button-primary button-expanded">Call</a>
+        </div>
+        <div class="cell auto">
+          <a href="javascript:void(Tawk_API.toggle())"  class="button button-secondary button-expanded">Chat</a>
+        </div>
+      </div>
+    </div>
+
+</nav>

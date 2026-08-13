@@ -1,0 +1,26 @@
+{% assign collections_list = '' %}
+{% assign sanitised_term = search.terms | replace: '*', '' %}
+{% assign handle = sanitised_term | handle %}
+{% assign all_terms = sanitised_term | split: ' ' %}
+
+
+{% unless collections[handle] == empty %}
+{% assign collections_list = collections_list | append: handle | append: ',' %}
+{% endunless %}
+{% for collection in collections %}
+  {% if collection.handle contains sanitised_term or sanitised_term contains collection.handle or collection.description contains sanitised_term %}
+    {% assign collections_list = collections_list | append: collection.handle | append: ',' %}
+  {% endif %}
+  {% for term in all_terms %}
+    {% assign term_size = term | size %}
+
+    {% if term_size > 2 %}
+      {% if collection.handle contains term or term contains collection.handle or collection.description contains term %}
+        {% assign collections_list = collections_list | append: collection.handle | append: ',' %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+{% assign collections_list = collections_list | split: ',' %}
+{% assign collections_list = collections_list | uniq %}
+{% assign collection_count = collections_list | size %}

@@ -1,0 +1,80 @@
+{% assign related_products = product.metafields.related_products %}
+{% assign related_product_1 =  product.metafields.related_products.product_1.value %}
+{% assign related_product_2 =  product.metafields.related_products.product_2.value %}
+{% assign related_product_3 =  product.metafields.related_products.product_3.value %}
+{% assign related_product_4 =  product.metafields.related_products.product_4.value %}
+
+{% if related_products.size > 0 %}
+
+<div class="section section-related-products theme-light"  data-autoload-section="related-products">
+
+  <div class="grid-container">
+    <div class="grid-x grid-margin-x align-middle mb-30">
+      <div class="cell medium-auto text-center medium-text-left">
+        <div class="overline-uppercase color-secondary mb-5">{{ section.settings.section_subheading }}</div>
+        <h2>{{ section.settings.section_title }}</h2>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="grid-container">
+
+    <div class="slider-wrapper">
+      <div class="glide">
+        <div data-glide-el="track" class="glide__track">
+          <div class="glide__slides grid-x grid-margin-x grid-margin-y">
+              {% if related_product_1 != blank %}
+                <div class="cell large-3 small-6 grid-x align-stretch">
+                  {% render 'product-tile' product: related_product_1 %}
+                </div>
+              {% endif %}
+            {% if related_product_2 != blank %}
+              <div class="cell large-3 small-6 grid-x align-stretch">
+                {% render 'product-tile' product: related_product_2 %}
+              </div>
+            {% endif %}
+            {% if related_product_3 != blank %}
+              <div class="cell large-3 small-6 grid-x align-stretch">
+                {% render 'product-tile' product: related_product_3 %}
+              </div>
+            {% endif %}
+            {% if related_product_4 != blank %}
+              <div class="cell large-3 small-6 grid-x align-stretch">
+                {% render 'product-tile' product: related_product_4 %}
+              </div>
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+{% endif %}
+
+
+{% schema %}
+{
+    "name": "Related Products",
+    "settings": [
+        {
+            "type": "header",
+            "content": "Section Title"
+        },
+        {
+            "type": "text",
+            "id": "section_title",
+            "label": "Title"
+        },
+        {
+            "type": "text",
+            "id": "section_subheading",
+            "label": "Subheading"
+        }
+    ]
+}
+{% endschema %}

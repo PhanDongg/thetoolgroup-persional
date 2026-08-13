@@ -1,0 +1,71 @@
+{% if filter_class == blank %}
+  {% assign filter_class = "collection-filter-radios" %}
+{% endif %}
+
+{% assign filter_handle = filter_name | handle %}
+{% assign tags = "" %}
+{% for tag in all_tags %}
+  {% assign split = tag | split: ':' %}
+  {% assign qhandle = tag | handle %}
+  {% if split[0] == filter_handle %}
+    {% assign tags = tags | append: qhandle | append: ';;' | append: tag | append: ',' %}
+  {% endif %}
+{% endfor %}
+{% assign tags = tags | split: ',' %}
+{% if tags.size > 0 %}
+  <div class="collection-filter-group">
+    <div class="color-secondary-text">
+      <button class="collection-filter-title" aria-expanded="true" aria-controls="{{filter_handle}}-filters" id="{{filter_handle}}-filters-header">
+        {{filter_name}}
+        {% render 'icon-chevron-down-bold' %}
+      </button>
+    </div>
+    <ul class="{{filter_class}}" role="region" aria-labelledby="{{filter_handle}}-filters-header" id="{{filter_handle}}-filters">
+
+
+      {% comment %} Get Active Tag {% endcomment %}
+      {% assign active_tag =  '' %}
+      {% assign filter_prefix =  filter_handle | append: '-' %}
+      {% if tags_base contains filter_prefix %}
+        {% assign tag_name_split = tags_base | split: filter_prefix %}
+        {% assign tag_name_part = tag_name_split[1] | split: '+' %}
+        {% assign active_tag =  tag_name_part[0] | prepend: filter_prefix %}
+      {% endif %}
+
+
+      {% for tag in tags %}
+
+        {% assign split = tag | split: ';;' %}
+        {% assign tag = split[0] %}
+        {% assign tagname = tag | split: ':' %}
+
+        {% if tagname.size > 1 and tagname[1] != "default title" %}
+          {% assign tagname = tagname[1] %}
+          {% assign qhandle = tag | handle %}
+
+          {% assign tagAppend = split[0] | append: '+' %}
+          {% assign tagPrepend = split[0] | prepend: '+' %}
+
+          {%- capture tagurl -%}
+            {%- if request.path contains split[0] -%}
+              {{request.path | remove: tagAppend | remove: tagPrepend | remove: split[0]}}
+            {%- else -%}
+              {%- if active_tag != blank -%}
+                {{request.path | replace: active_tag, split[0]}}
+              {%- else -%}
+                {{tags_base}}{{split[0]}}
+              {%- endif -%}
+            {%- endif -%}
+          {%- endcapture -%}
+
+          <li>
+            <a href="{{tagurl}}{{ collection_param }}" {% if request.path contains split[0] %}aria-current{% endif %}>
+              {{tagname}}
+            </a>
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+
+  </div>
+{% endif %}

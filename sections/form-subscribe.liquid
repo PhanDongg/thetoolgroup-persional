@@ -1,0 +1,90 @@
+<div class="section section-newsletter theme-dark" data-autoload-section="form-subscribe">
+  <div class="grid-container">
+
+    <div class="grid-x grid-margin-x grid-margin-y align-middle align-justify">
+      <div class="cell large-5">
+        <div class="text-center medium-text-left">
+          <h2 class="m-0">{{section.settings.section_title}}</h2>
+          {%  if section.settings.section_subheading != blank %}
+          <p>{{section.settings.section_subheading}}</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="cell large-5">
+
+            {% form 'customer' %}
+
+              <input type="hidden" name="contact[tags]" value="newsletter">
+
+              <div class="form-container">
+                <div class="grid-x grid-margin-y">
+
+                  <div class="cell small-12 medium-7">
+                    <label for="Email" class="show-for-sr">Email</label>
+                    <input type="email"
+                           name="contact[email]"
+                           required
+                           class="{% if form.errors contains 'email' %}input-error{% endif %}"
+                           id="Email"
+                           value="{% if customer.email != blank %}{{ customer.email }}{% endif %}"
+                           placeholder="{{ 'general.newsletter_form.email_placeholder' | t }}"
+                           autocorrect="off"
+                           autocapitalize="off">
+                  </div>
+
+                  <div class="cell small-12 medium-5">
+                    <input type="submit" class="button button-primary button-solid button-expanded" value="{{ 'general.newsletter_form.submit' | t }}">
+                  </div>
+                </div>
+
+              </div>
+
+              {% if form.posted_successfully? %}
+                <p class="form-success">
+                  {{ 'general.newsletter_form.confirmation' | t }}
+                </p>
+              {% endif %}
+              {% if form.errors %}
+                <div class="cell small-12">
+                  {{ form.errors | default_errors }}
+                </div>
+              {% endif %}
+
+            {% endform %}
+
+      </div>
+
+    </div>
+
+
+
+  </div>
+
+</div>
+{% schema %}
+{
+  "name": "Subscribe",
+  "settings": [
+  {
+    "type": "header",
+    "content": "Section Title"
+  },
+  {
+    "type": "text",
+    "id": "section_title",
+    "label": "Title"
+  },
+  {
+    "type": "text",
+    "id": "section_subheading",
+    "label": "Subheading"
+  }
+  ],
+  "presets": [
+  {
+    "name": "Subscribe",
+    "category": "Forms"
+  }
+  ]
+}
+{% endschema %}

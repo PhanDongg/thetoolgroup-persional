@@ -1,0 +1,48 @@
+{% if settings.show_feature_strip %}
+    <div class="header-feature-strip text-small text-center" data-autoload-snippet="feature-strip">
+        <div class="grid-container">
+          <div class="glide">
+            <div data-glide-el="track" class="glide__track">
+              <ul class="glide__slides header-feature-strip-list grid-x align-middle align-center">
+                {% unless settings.feature_strip_text_1 == blank %}
+                  <li class="cell medium-3">
+                    <div class="header-feature-strip-content">
+                      <img src="{{ settings.feature_strip_icon_1 | img_url: 'x25' }}"
+                           alt="{{ settings.feature_strip_icon_1.alt }}"/>
+                      {{ settings.feature_strip_text_1 }}
+                    </div>
+                  </li>
+                {% endunless %}
+                {% unless settings.feature_strip_text_2 == blank %}
+                  <li class="cell medium-3">
+                    <div class="header-feature-strip-content">
+                      <img src="{{ settings.feature_strip_icon_2 | img_url: 'x25' }}"
+                           alt="{{ settings.feature_strip_icon_2.alt }}"/>
+                      {{ settings.feature_strip_text_2 }}
+                    </div>
+                  </li>
+                {% endunless %}
+                {% unless settings.feature_strip_text_3 == blank %}
+                  <li class="cell medium-3">
+                    <div class="header-feature-strip-content">
+                      <img src="{{ settings.feature_strip_icon_3 | img_url: 'x25' }}"
+                         alt="{{ settings.feature_strip_icon_3.alt }}"/>
+                      {{ settings.feature_strip_text_3 }}
+                    </div>
+                  </li>
+                {% endunless %}
+                {% unless settings.feature_strip_text_4 == blank %}
+                  <li class="cell medium-3">
+                    <div class="header-feature-strip-content">
+                      <img src="{{ settings.feature_strip_icon_4 | img_url: 'x25' }}"
+                           alt="{{ settings.feature_strip_icon_4.alt }}"/>
+                      {{ settings.feature_strip_text_4 }}
+                    </div>
+                  </li>
+                {% endunless %}
+              </ul>
+            </div>
+          </div>
+        </div>
+    </div>
+{% endif %}

@@ -1,0 +1,70 @@
+<div data-autoload-section="product-recommendations">
+  <div class="product-recommendations" data-product-id="{{ product.id }}" data-limit="4">
+    {%- if recommendations.products_count > 0 -%}
+      <div class="section section-related-products theme-light">
+
+
+        <div class="grid-container">
+          <div class="grid-x grid-margin-x align-middle mb-30">
+            <div class="cell medium-auto text-center medium-text-left">
+              <div class="overline-uppercase color-secondary mb-5">{{ section.settings.section_subheading }}</div>
+              <h2>{{ section.settings.section_title }}</h2>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="grid-container products-container">
+          <div class="slider-wrapper">
+            <div class="glide">
+              <div data-glide-el="track" class="glide__track">
+                <div class="product-recommendations-container glide__slides grid-x grid-margin-x grid-margin-y">
+                  {% for product in recommendations.products %}
+                     {%- if product.price > 0 -%}
+                    <script type="application/json" class="bold-product-json">{{ product | json }}</script>
+                    <div class="cell large-3 small-6 grid-x align-stretch">
+                      {% render 'product-tile' product: product %}
+                    </div>
+                  {%- endif -%}
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}  
+  </div>
+</div>
+
+{% schema %}
+{
+    "name": "Products Recommendations",
+    "settings": [
+        {
+            "type": "header",
+            "content": "Section Title"
+        },
+        {
+            "type": "text",
+            "id": "section_title",
+            "label": "Title"
+        },
+        {
+            "type": "text",
+            "id": "section_subheading",
+            "label": "Subheading"
+        },
+          {
+            "type": "header",
+            "content": "Section Button"
+        },
+        {
+            "type": "text",
+            "id": "exclude_collections",
+            "label": "Exclude Collections",
+            "info": "Add comma separated list of collection handles to exclude from related products."
+        }
+    ]
+}
+{% endschema %}

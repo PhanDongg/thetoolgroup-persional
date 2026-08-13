@@ -1,0 +1,144 @@
+<div data-autoload-section="cart" class="section section-cart  theme-light">
+
+  <div class="grid-container">
+
+    <h2 class="mb-40 text-center">Shopping Cart</h2>
+
+    {% if cart.item_count > 0 %}
+
+      <form action="/cart" method="post" novalidate>
+
+        <div class="grid-x grid-margin-x">
+
+          <div class="cell large-8">
+            <div class="grid-y cart-grid" data-cart-grid is="cart-grid">
+
+              {% for item in cart.items %}
+
+                {% render 'cart-product' item: item %}
+
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="cell large-4">
+
+            <div class="form-box">
+              <h3>Order Summary</h3>
+
+              <div class="cart-totals">
+
+                <div class="cart-totals-container">
+
+                  <div class="flex-container align-justify mb-20">
+                    <p class="m-0 color-secondary-text">Subtotal (<span class="cart-item-count">{{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }}</span>)</p>
+                    <p class="m-0 cart-subtotal-price color-secondary-text">{{ cart.items_subtotal_price | money }}</p>
+                  </div>
+
+                  {% for discount_application in cart.cart_level_discount_applications %}
+                    <div class="flex-container align-justify mb-20 cart-discount">
+                      <p class="m-0 color-secondary-text"> {{ discount_application.title }}</p><p class="m-0 color-secondary-text cart-discount-price">-{{ discount_application.total_allocated_amount | money }}</p>
+                    </div>
+                  {% endfor %}
+
+                  <div class="price-row total">
+                    <div class="cart-total-price-container mb-20">
+                      <div class="color-secondary-text text-uppercase"><strong>Total</strong></div>
+                      <div class="color-secondary-text cart-total-price"><strong>{{ cart.total_price | money }}</strong></div>
+                    </div>
+                  </div>
+
+                </div>
+
+
+
+                <div class="shipping-note-container"
+                     data-no-free-shipping-notice="{{ 'cart.general.shipping_at_checkout' | t }}"
+                     data-free-shipping-display="{{ settings.show_free_shipping_notice }}"
+                     data-free-shipping-cost="{{ settings.free_shipping_price | times: 1 }}"
+                     data-free-shipping-notice="{{ settings.free_shipping_notice }}"
+                >
+                  <p class="shipping-note label-small">
+                    {% if settings.show_free_shipping_notice %}
+                      {% assign freeDelivery = settings.free_shipping_price | times: 1 %}
+                      {% assign price = cart.total_price | round | divided_by : 100 %}
+                      {% if freeDelivery < price %}
+                        {{ settings.free_shipping_notice }}
+                      {% else %}
+                        Spend ${{freeDelivery | minus: price}} more to receive free shipping
+                      {% endif %}
+                    {% else %}
+                      {{ 'cart.general.shipping_at_checkout' | t }}
+                    {% endif %}
+                  </p>
+                </div>
+
+
+                <div class="po-number">
+    				<label for="po_number">PO Number</label>
+    				<input type="text" name="attributes[Invoice PO Number]" id="po_number" value="{{ cart.attributes['Invoice PO Number'] }}" />
+				</div>
+
+              	<div class="grid-x align-bottom {% if settings.cart_notes_enable %}align-justify{% else %}align-right{% endif %}">
+          			{% if settings.cart_notes_enable %}
+            		<div class="special-note">
+              			<label for="CartSpecialInstructions">{{ 'cart.general.note' | t }}</label>
+              			<textarea cols="50" name="note" id="CartSpecialInstructions">{{ cart.note }}</textarea>
+            		</div>
+          			{% endif %}
+              	</div>
+                
+                
+                <div class="align-right small-stacked grid-x grid-margin-x grid-margin-y mt-10">
+                  <button class="cell medium-auto button button-primary" type="submit" name="update" value="{{ 'cart.general.update' | t }}" id="update-cart-button">{{ 'cart.general.update' | t }}</button>
+                  <button class="cell medium-auto button button-secondary" type="submit" name="checkout">{{ 'cart.general.checkout' | t }}</button>
+                </div>
+
+              </div>
+            </div>
+
+
+
+          </div>
+
+        </div>
+
+
+        <div class="grid-x mt-20">
+
+          {% if settings.continue_shopping_collection != blank %}
+            <a class="button button-hollow has-icon" href="{{  collections[settings.continue_shopping_collection].url }}">
+              <i>{% render 'icon-chevron-left' %}</i> Continue Shopping
+            </a>
+          {% endif %}
+
+
+        </div>
+
+       
+      </form>
+
+    {% else %}
+
+      {% comment %}
+        Cart empty state
+      {% endcomment %}
+
+      <div class="message-box rte supports-cookies">
+        <p>{{ 'cart.general.empty' | t }}</p>
+        <p>{{ 'cart.general.continue_browsing_html' | t }}</p>
+      </div>
+
+      {% comment %}
+        Cart no cookies state
+        ---------------------
+        Browser cookies are required to use the cart. If cookies aren't enabled in the
+        browser a message is displayed prompting the user to enable them.
+      {% endcomment %}
+      <div class="message-box rte supports-no-cookies">
+        <p>{{ 'cart.general.cookies_required' | t }}</p>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
