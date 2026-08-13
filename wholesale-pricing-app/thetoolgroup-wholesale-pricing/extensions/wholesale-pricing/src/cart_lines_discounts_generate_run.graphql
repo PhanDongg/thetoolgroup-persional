@@ -1,0 +1,65 @@
+query CartInput {
+  cart {
+    buyerIdentity {
+      customer {
+        wholesaleTags: hasTags(
+          tags: [
+            "WholesaleTK"
+            "WholesaleNO"
+            "WholesalePR"
+            "WholesaleGP"
+            "WholesaleBL"
+            "WholesaleBU"
+            "WholesaleTT"
+            "Wholesale"
+          ]
+        ) {
+          tag
+          hasTag
+        }
+      }
+    }
+    lines {
+      id
+      cost {
+        amountPerQuantity {
+          amount
+        }
+      }
+      merchandise {
+        __typename
+        ... on ProductVariant {
+          product {
+            wholesale: metafield(namespace: "product", key: "wholesale_price") {
+              value
+            }
+            wholesaleTk: metafield(namespace: "product", key: "wholesaletk_price") {
+              value
+            }
+            wholesaleNo: metafield(namespace: "product", key: "wholesaleno_price") {
+              value
+            }
+            wholesalePr: metafield(namespace: "product", key: "wholesalepr_price") {
+              value
+            }
+            wholesaleGp: metafield(namespace: "product", key: "wholesalegp_price") {
+              value
+            }
+            wholesaleBl: metafield(namespace: "product", key: "wholesalebl_price") {
+              value
+            }
+            wholesaleBu: metafield(namespace: "product", key: "wholesalebu_price") {
+              value
+            }
+            wholesaleTt: metafield(namespace: "product", key: "wholesalett_price") {
+              value
+            }
+          }
+        }
+      }
+    }
+  }
+  discount {
+    discountClasses
+  }
+}

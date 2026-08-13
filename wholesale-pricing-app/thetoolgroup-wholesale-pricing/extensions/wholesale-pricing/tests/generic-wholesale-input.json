@@ -1,0 +1,38 @@
+{
+  "cart": {
+    "buyerIdentity": {
+      "customer": {
+        "wholesaleTags": [
+          {"tag": "WholesaleTK", "hasTag": false},
+          {"tag": "WholesaleNO", "hasTag": false},
+          {"tag": "WholesalePR", "hasTag": false},
+          {"tag": "WholesaleGP", "hasTag": false},
+          {"tag": "WholesaleBL", "hasTag": false},
+          {"tag": "WholesaleBU", "hasTag": false},
+          {"tag": "WholesaleTT", "hasTag": false},
+          {"tag": "Wholesale", "hasTag": true}
+        ]
+      }
+    },
+    "lines": [
+      {
+        "id": "gid://shopify/CartLine/1",
+        "cost": {"amountPerQuantity": {"amount": "15.06"}},
+        "merchandise": {
+          "__typename": "ProductVariant",
+          "product": {
+            "wholesale": {"value": "9.04"},
+            "wholesaleTk": null,
+            "wholesaleNo": null,
+            "wholesalePr": null,
+            "wholesaleGp": null,
+            "wholesaleBl": null,
+            "wholesaleBu": null,
+            "wholesaleTt": null
+          }
+        }
+      }
+    ]
+  },
+  "discount": {"discountClasses": ["PRODUCT"]}
+}

@@ -1,0 +1,14 @@
+api_version = "2026-07"
+
+[[extensions]]
+# Change the merchant-facing name of the extension in locales/en.default.json
+name = "t:name"
+handle = "wholesale-pricing-home"
+type = "ui_extension"
+uid = "f819141b-96f9-44bd-6003-2fab8d819a3c74672305"
+
+# Only 1 target can be specified for each app-home extension
+[[extensions.targeting]]
+module = "./src/AppHome.jsx"
+target = "admin.app.home.render"
+assets = "./assets"
